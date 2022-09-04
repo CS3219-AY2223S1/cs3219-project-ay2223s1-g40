@@ -15,8 +15,8 @@ export async function createMatch(params) {
   return new MatchModel(params)
 }
 
-export async function getAvailableMatch() {
-  let availableMatch = await db.collection("matchmodels").findOneAndDelete({})
+export async function getAvailableMatch(difficulty) {
+  let availableMatch = await db.collection("matchmodels").findOneAndDelete({ difficulty })
     .then(result => result)
     .catch(error => error);
   return availableMatch;

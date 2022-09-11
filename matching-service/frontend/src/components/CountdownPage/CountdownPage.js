@@ -1,9 +1,12 @@
 import React from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import { io } from "socket.io-client";
+import { useSearchParams } from "react-router-dom"
+import VideoPlayer from "react-background-video-player";
 
 
 import "./styles.css";
-//import backgroundVideo from "./media/videos/background.mp4"
+import backgroundVideo from "./background.mp4"
 
 const renderTime = ({ remainingTime }) => {
   if (remainingTime === 0) {
@@ -20,34 +23,45 @@ const renderTime = ({ remainingTime }) => {
   );
 };
 
-export default function CountdownPage() {
-  return (
-    <div className="App">
-      {/* <video loop autoPlay muted id='video'>
-        <source
-          src={backgroundVideo}
-          type="video/mp4"
+export default function CountdownPage({route}) {
+
+    // Retrieve Difficulty
+    const[searchparams] = useSearchParams();
+    const difficulty = searchparams.get("difficulty");
+    console.log("Received as: " + difficulty)
+
+    // The Client Communication
+    const socket = io("ws://localhost:3000");
+    socket.emit("request-match", difficulty);
+
+    return (
+        <div className="App">
+        <VideoPlayer
+            className="video"
+            src={
+                backgroundVideo
+            }
+            autoPlay={true}
+            muted={true}
         />
-        Your browser does not support the video tag.
-      </video> */}
-      <h1>
-        PeerPrep
-      </h1>
-      <div className="timer-wrapper">
-        <CountdownCircleTimer
-          isPlaying
-          size={250}
-          duration={10}
-          colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-          colorsTime={[10, 6, 3, 0]}
-          onComplete={() => ({ shouldRepeat: false, delay: 1 })}
-        >
-          {renderTime}
-        </CountdownCircleTimer>
-      </div>
-      <p className="info">
-        Please wait while we search for your best peer-mate!
-      </p>
-    </div>
-  );
-}
+        <h1>
+            PeerPrep
+        </h1>
+        <div className="timer-wrapper">
+            <CountdownCircleTimer
+            isPlaying
+            size={250}
+            duration={30}
+            colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+            colorsTime={[10, 6, 3, 0]}
+            onComplete={() => ({ shouldRepeat: false, delay: 1 })}
+            >
+            {renderTime}
+            </CountdownCircleTimer>
+        </div>
+        <p className="info">
+            Please wait while we search for your best peer-mate!
+        </p>
+        </div>
+    );
+    }

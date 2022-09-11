@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,9 +15,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
-import {Routes, Route, useNavigate} from 'react-router-dom';
-import CountdownPage from '../CountdownPage/CountdownPage';
-import io from 'socket.io-client';
+import {createSearchParams, useNavigate} from 'react-router-dom';
 
 
 function Copyright(props) {
@@ -35,62 +32,40 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
-const socket = io();
-
 
 export default function DifficultyPage() {
 
   const navigate = useNavigate();
+  const [checked, setChecked] = React.useState([0]);
   
-  const handleSubmit = (event) => {
+  // Handle Submit Event
+  const handleSubmit = event => {
     event.preventDefault();
-    console.log(checked[1]); // Submits the difficulty chosen -> checked[1]
-    navigate('/countdown'); // Redirects to countdown page
+    event.stopPropagation();
+    if (checked[1] !== undefined) {
+      navigate({
+        pathname: "/countdown",
+        search: createSearchParams({
+          difficulty: checked[1]
+        }).toString()
+      })
+    }
+    else {
+      alert("Please select a difficulty!")
+    }
   };
 
-  const [checked, setChecked] = React.useState([0]);
-
+  // Toggle Difficulty Event
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [checked];
-    
-
     if (currentIndex === -1) {
       newChecked.push(value);
     } else {
       newChecked.splice(currentIndex, 1);
     }
-    console.log(checked)
     setChecked(newChecked);
   };
-
-  // The Client Communication
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [lastPong, setLastPong] = useState(null);
-
-  useEffect(() => {
-    socket.on('connect', () => {
-      setIsConnected(true);
-    });
-
-    socket.on('disconnect', () => {
-      setIsConnected(false);
-    });
-
-    socket.on('pong', () => {
-      setLastPong(new Date().toISOString());
-    });
-
-    return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('pong');
-    };
-  }, []);
-
-  const sendPing = () => {
-    socket.emit('ping');
-  }
 
   // Webpage Render
   return (
@@ -112,7 +87,7 @@ export default function DifficultyPage() {
           <Typography component="h1" variant="h5">
             Welcome to PeerPrep!
           </Typography>
-          <Typography component="subtitle1" align="center">
+          <Typography component="sub" align="center">
             In order to ensure a customized experience, please choose the difficulty of the interview questions
             you would like to see.
           </Typography>
@@ -148,7 +123,6 @@ export default function DifficultyPage() {
                 );
             })}
             </List>
-
             <Button
               type="submit"
               fullWidth
@@ -160,17 +134,6 @@ export default function DifficultyPage() {
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
-
-        <Routes>
-          <Route path="/countdown" element={<CountdownPage />} />
-        </Routes>
-
-        <div>
-        <p>Connected: { '' + isConnected }</p>
-        <p>Last pong: { lastPong || '-' }</p>
-        <button onClick={ sendPing }>Send ping</button>
-        </div>
-
       </Container>
     </ThemeProvider>
   );

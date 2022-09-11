@@ -10,7 +10,7 @@ function App() {
                 <Router>
                     <Routes>
                         <Route exact path="/" element={<Navigate replace to="/difficulty" />}></Route>
-                        <Route path="/difficulty" element={<DifficultyPage/>}/>
+                        <Route path="/difficulty/*" element={<DifficultyPage/>}/>
                         <Route exact path="/" element={<Navigate replace to="/countdown" />}></Route>
                         <Route path="/countdown" element={<CountdownPage/>}/>
                     </Routes>

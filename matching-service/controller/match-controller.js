@@ -5,10 +5,10 @@ export const respond = (socket) => {
     console.log("match requested");
 
     const availableMatch = await getAvailableMatch(difficulty);
-    if (!availableMatch || !availableMatch.value) {
+    if (!availableMatch) {
       createMatch(socket.id, difficulty);
     } else {
-      const hostPlayer = availableMatch.value.hostPlayer;
+      const hostPlayer = availableMatch.dataValues.hostPlayer;
       socket.broadcast.emit("match-success", hostPlayer, socket.id);
     }
   })

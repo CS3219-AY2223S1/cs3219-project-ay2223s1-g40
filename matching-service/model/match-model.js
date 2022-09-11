@@ -1,16 +1,18 @@
-import mongoose from 'mongoose';
+import { DataTypes } from 'sequelize';
 
-var Schema = mongoose.Schema
-let MatchModelSchema = new Schema({
-    hostPlayer: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    difficulty: {
-        type: String,
-        required: true,
-    }
-})
+const MatchModel = (sequelize) => sequelize.define('MatchModel', {
+  // Model attributes are defined here
+  hostPlayer: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  difficulty: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+}, {
+  timestamps: false
+});
 
-export default mongoose.model('MatchModel', MatchModelSchema)
+export default MatchModel;

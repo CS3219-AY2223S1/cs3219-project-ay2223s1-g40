@@ -3,11 +3,11 @@ import { createMatch, getAvailableMatch } from './repository.js';
 // need to separate orm functions from repository to decouple business logic from persistence
 export async function ormCreateMatch(hostPlayer, difficulty) {
     try {
-        const newMatch = await createMatch({ hostPlayer, difficulty });
-        newMatch.save();
+        await createMatch({ hostPlayer, difficulty });
         return true;
     } catch (err) {
-        console.log('ERROR: Could not create new match');
+        console.log(err);
+            // 'ERROR: Could not create new match');
         return { err };
     }
 }

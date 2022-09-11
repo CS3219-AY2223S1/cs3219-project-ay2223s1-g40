@@ -3,6 +3,7 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { io } from "socket.io-client";
 import { useSearchParams } from "react-router-dom"
 import VideoPlayer from "react-background-video-player";
+import { useEffect, useState } from "react";
 
 
 import "./styles.css";
@@ -31,7 +32,31 @@ export default function CountdownPage({route}) {
     console.log("Received as: " + difficulty)
 
     // The Client Communication
-    const socket = io("ws://localhost:3000");
+    const socket = io("http://localhost:8001");
+    const [isConnected, setIsConnected] = useState(socket.connected);
+
+    useEffect(() => {
+        socket.on('connect', () => {
+        setIsConnected(true);
+        });
+
+        socket.on('disconnect', () => {
+        setIsConnected(false);
+        });
+
+        socket.on('match-success', (hostPlayer, guestPlayer) => {
+            if (socket.id === hostPlayer || socket.id === guestPlayer) {
+                socket.emit("join-room", hostPlayer);
+            }
+        })
+
+        return () => {
+        socket.off('connect');
+        socket.off('disconnect');
+        socket.off('match-success');
+        };
+    }, []);
+
     socket.emit("request-match", difficulty);
 
     return (

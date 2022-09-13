@@ -24,7 +24,7 @@ const renderTime = ({ remainingTime }) => {
   );
 };
 
-export default function CountdownPage({route}) {
+export default function CountdownPage() {
 
     // Retrieve Difficulty
     const[searchparams] = useSearchParams();

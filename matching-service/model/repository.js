@@ -1,23 +1,21 @@
+import { Sequelize } from 'sequelize';
 import MatchModel from './match-model.js';
 import 'dotenv/config'
 
-// Set up mongoose connection
-import mongoose from 'mongoose';
-
-let mongoDB = process.env.ENV == "PROD" ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
-
-mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
-
-let db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+const sequelize = new Sequelize('sqlite::memory:');
+const matchModel = await MatchModel(sequelize);
+sequelize.sync({ force: true }).then(() => console.log('db is ready'));
 
 export async function createMatch(params) { 
-  return new MatchModel(params)
+  return matchModel.create(params);
 }
 
 export async function getAvailableMatch(difficulty) {
-  let availableMatch = await db.collection("matchmodels").findOneAndDelete({ difficulty })
-    .then(result => result)
+  const availableMatch = await matchModel.findOne({ where: { difficulty } })
+    .then(result => {
+      return matchModel.destroy({ where: { difficulty }})
+        .then(u => result)
+    })
     .catch(error => error);
   return availableMatch;
 }

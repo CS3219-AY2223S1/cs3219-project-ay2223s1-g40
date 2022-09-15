@@ -19,14 +19,20 @@ export class UserController {
   constructor(private readonly UserService: UserService) {}
 
   @Post()
-  async createUser(
-    @Res() response,
-    @Body() createUserDto: CreateUserDto,
-  ) {
+  async createUser(@Res() response, @Body() createUserDto: CreateUserDto) {
     try {
-      const newUser = await this.UserService.createUser(
-        createUserDto,
+      const checkUser = await this.UserService.findByUsername(
+        createUserDto.username,
       );
+      if (checkUser.length > 0) {
+        console.log('This username already exists!');
+        return response.status(HttpStatus.CONFLICT).json({
+          statusCode: 409,
+          message: 'Username already exists!',
+          error: 'Conflict',
+        });
+      }
+      const newUser = await this.UserService.createUser(createUserDto);
       return response.status(HttpStatus.CREATED).json({
         message: 'User has been created successfully',
         newUser: newUser,
@@ -76,9 +82,7 @@ export class UserController {
   @Get('/:id')
   async getUser(@Res() response, @Param('id') UserId: string) {
     try {
-      const existingUser = await this.UserService.getUser(
-        UserId,
-      );
+      const existingUser = await this.UserService.getUser(UserId);
       return response.status(HttpStatus.OK).json({
         message: 'User found successfully',
         existingUser,
@@ -91,9 +95,7 @@ export class UserController {
   @Delete('/:id')
   async deleteUser(@Res() response, @Param('id') UserId: string) {
     try {
-      const deletedUser = await this.UserService.deleteUser(
-        UserId,
-      );
+      const deletedUser = await this.UserService.deleteUser(UserId);
       return response.status(HttpStatus.OK).json({
         message: 'User deleted successfully',
         deletedUser,

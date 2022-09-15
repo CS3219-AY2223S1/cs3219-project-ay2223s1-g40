@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+
+// @mui imports
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,8 +17,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
-import {createSearchParams, useNavigate} from 'react-router-dom';
 
+import {createSearchParams, useNavigate} from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -35,11 +37,11 @@ const theme = createTheme();
 
 export default function DifficultyPage() {
 
+  const [checked, setChecked] = useState([0]);
   const navigate = useNavigate();
-  const [checked, setChecked] = React.useState([0]);
-  
+
   // Handle Submit Event
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     event.stopPropagation();
     if (checked[1] !== undefined) {
@@ -93,23 +95,22 @@ export default function DifficultyPage() {
           </Typography>
         
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-
           {/*The List*/}
-          <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            {['Beginner', 'Intermediate', 'Advanced'].map((value) => {
+            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+              {['Beginner', 'Intermediate', 'Advanced'].map((value) => {
                 const labelId = `checkbox-list-label-${value}`;
                 return (
                 <ListItem
-                    key={value}
-                    secondaryAction={
-                      <IconButton edge="end">
-                      </IconButton>
-                      }
-                    disablePadding
-                    >
-                    <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                  key={value}
+                  secondaryAction={
+                    <IconButton edge="end">
+                    </IconButton>
+                    }
+                  disablePadding
+                >
+                  <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
                     <ListItemIcon>
-                        <Checkbox
+                      <Checkbox
                         edge="start"
                         checked={checked.indexOf(value) !== -1}
                         tabIndex={-1}
@@ -118,10 +119,10 @@ export default function DifficultyPage() {
                         />
                     </ListItemIcon>
                     <ListItemText id={1} primary={value} />
-                    </ListItemButton>
+                  </ListItemButton>
                 </ListItem>
                 );
-            })}
+              })}
             </List>
             <Button
               type="submit"

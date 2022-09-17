@@ -21,10 +21,7 @@ const io = new Server(httpServer, {
   },
 });
 
-io.on("connection", (socket) => {
-    console.log("a user connected");
-    // handling over the socket logic to the controller
-    respond(socket);
-  });
+// handling over the io logic to the controller
+respond(io);
 
 httpServer.listen(8001);

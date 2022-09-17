@@ -6,13 +6,13 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { useSearchParams } from "react-router-dom"
 import {createSearchParams, useNavigate} from 'react-router-dom';
 
+// Prevent eager initialization of socket
+let socket;
 
-const socket = io("http://localhost:8001");
 const renderTime = ({ remainingTime }) => {
   if (remainingTime === 0) {
-    socket.emit("match-fail");
+    socket.emit("cancel-match");
     console.log("Failure");
-    socket.disconnect();
     return (
       <div className="timer">
         Please try again later. 
@@ -29,7 +29,6 @@ const renderTime = ({ remainingTime }) => {
   );
 };
 
-
 export default function CountdownPage() {
 
   // Navigation
@@ -41,8 +40,12 @@ export default function CountdownPage() {
   console.log("Received as: " + difficulty)
 
   useEffect(() => { 
+      // Initialize when the page is rendered
+      socket = io("http://localhost:8001");
       socket.emit("request-match", difficulty);
+
       socket.on('match-success', (hostPlayer, guestPlayer) => {
+        console.log("received");
           if (socket.id === hostPlayer || socket.id === guestPlayer) {
               socket.emit("join-room", hostPlayer);
               console.log("Joining Room");
@@ -50,20 +53,19 @@ export default function CountdownPage() {
                   pathname: "/room",
                   search: createSearchParams({
                     communications: socket,
-                    roomID: socket.id
+                    roomID: hostPlayer
                   }).toString()
               })
           }
       })
+
       socket.on("disconnect", (reason) => {
-        if (reason === "io client disconnect") {
-          socket.emit("match-fail");
-          console.log("Manual Failure")
-        }
+        console.log("Socket disconnected")
       })
+      
       return () => {
-      socket.off('match-success');
-      socket.off('disconnect');
+        socket.off('match-success');
+        socket.off('disconnect');
       };
   }, [difficulty, navigate]);
 

@@ -1,29 +1,35 @@
 import { ormCreateMatch as _createMatch, ormGetAvailableMatch as _getAvailableMatch, ormDestroyMatch as _destroyMatch} from '../model/match-orm.js'
 
-export const respond = (socket) => {
-  socket.on("request-match", async (difficulty) => {
-    console.log("match requested");
+export const respond = (io) => {
+  io.on("connection", (socket) => {
+    console.log("a user connected");
 
-    const availableMatch = await getAvailableMatch(difficulty);
-    if (!availableMatch) {
-      createMatch(socket.id, difficulty);
-    } else {
-      const hostPlayer = availableMatch.dataValues.hostPlayer;
-      socket.broadcast.emit("match-success", hostPlayer, socket.id);
-    }
-  })
-  socket.on("join-room", (roomId) => {
-    socket.join(roomId);
-    console.log("match successful!");
-  })
-  socket.on("cancel-match", async () => {
-    await destroyMatch(socket.id);
-    socket.disconnect();
-  })
-  socket.on("leave-room", (roomId) => {
-    socket.leave(roomId);
-    socket.disconnect();
-  })
+    socket.on("request-match", async (difficulty) => {
+      console.log("match requested");
+      const availableMatch = await getAvailableMatch(difficulty);
+      if (!availableMatch) {
+        await createMatch(socket.id, difficulty);
+      } else {
+        const hostPlayer = availableMatch.dataValues.hostPlayer;
+        io.emit("match-success", hostPlayer, socket.id);
+      }
+    })
+
+    socket.on("join-room", (roomId) => {
+      socket.join(roomId);
+      console.log("match successful!");
+    })
+
+    socket.on("cancel-match", async () => {
+      await destroyMatch(socket.id);
+      socket.disconnect();
+    })
+    
+    socket.on("leave-room", (roomId) => {
+      socket.leave(roomId);
+      socket.disconnect();
+    })
+  });
 }
 
 const getAvailableMatch = async (difficulty) => {

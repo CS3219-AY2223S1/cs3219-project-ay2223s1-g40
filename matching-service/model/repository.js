@@ -19,3 +19,11 @@ export async function getAvailableMatch(difficulty) {
     .catch(error => error);
   return availableMatch;
 }
+
+export async function destroyMatch(hostPlayer) {
+  return await matchModel.destroy({
+    where: {
+      hostPlayer
+    }
+  })
+}

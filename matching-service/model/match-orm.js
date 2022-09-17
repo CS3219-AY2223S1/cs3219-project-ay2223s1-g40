@@ -1,4 +1,4 @@
-import { createMatch, getAvailableMatch } from './repository.js';
+import { createMatch, destroyMatch, getAvailableMatch } from './repository.js';
 
 // need to separate orm functions from repository to decouple business logic from persistence
 export async function ormCreateMatch(hostPlayer, difficulty) {
@@ -19,5 +19,14 @@ export async function ormGetAvailableMatch(difficulty) {
     } catch (err) {
         console.log('ERROR: Could not load available match');
         return { err };
+    }
+}
+
+export async function ormDestroyMatch(hostPlayer) {
+    try {
+        await destroyMatch(hostPlayer);
+        console.log('Match successfully deleted')
+    } catch (err) {
+        console.log('ERROR: Could not destroy this match');
     }
 }

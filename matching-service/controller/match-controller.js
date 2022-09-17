@@ -1,4 +1,4 @@
-import { ormCreateMatch as _createMatch, ormGetAvailableMatch as _getAvailableMatch } from '../model/match-orm.js'
+import { ormCreateMatch as _createMatch, ormGetAvailableMatch as _getAvailableMatch, ormDestroyMatch as _destroyMatch} from '../model/match-orm.js'
 
 export const respond = (socket) => {
   socket.on("request-match", async (difficulty) => {
@@ -15,6 +15,14 @@ export const respond = (socket) => {
   socket.on("join-room", (roomId) => {
     socket.join(roomId);
     console.log("match successful!");
+  })
+  socket.on("cancel-match", async () => {
+    await destroyMatch(socket.id);
+    socket.disconnect();
+  })
+  socket.on("leave-room", (roomId) => {
+    socket.leave(roomId);
+    socket.disconnect();
   })
 }
 
@@ -38,4 +46,8 @@ const createMatch = async (hostPlayer, difficulty) => {
     return;
     // return res.status(500).json({message: 'Database failure when creating new match!'})
   }
+}
+
+const destroyMatch = async (hostPlayer) => {
+    await _destroyMatch(hostPlayer);
 }

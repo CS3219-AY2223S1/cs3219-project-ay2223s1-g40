@@ -1,12 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { useSearchParams, useNavigate } from "react-router-dom";
-// import { io } from "socket.io-client";
+import SocketContext from "../context/CreateContext";
+
+
 
 export default function RoomPage() {
-    // const socket = io("http://localhost:8001");
+
+    function Socket() {
+        const socket = useContext(SocketContext);
+        return socket
+    }
+
+    const socket = Socket();
+    
     const navigate = useNavigate();
     const returnHome = event => {
         event.preventDefault()
@@ -18,9 +27,9 @@ export default function RoomPage() {
 
     // Retrieve Info
     const [searchparams] = useSearchParams();
-    const socket = searchparams.get("communications");
     const roomID = searchparams.get("roomID")
     console.log("Received as: " + roomID)
+
 
     // Communications
     useEffect(() => {

@@ -76,8 +76,6 @@ export default function CountdownPage() {
 
   const returnHome = event => {
     event.preventDefault()
-    socket.emit("cancel-match");
-    socket.disconnect();
     console.log("Left")
     navigate("/difficulty")
   }

@@ -3,6 +3,11 @@ import "./styles.css";
 
 import { io } from "socket.io-client";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
+
+import CancelIcon from '@mui/icons-material/Cancel';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+
 import { useSearchParams } from "react-router-dom"
 import {createSearchParams, useNavigate} from 'react-router-dom';
 
@@ -69,6 +74,12 @@ export default function CountdownPage() {
       };
   }, [difficulty, navigate]);
 
+  const returnHome = event => {
+    event.preventDefault()
+    console.log("Left")
+    navigate("/difficulty")
+  }
+
   return (
       <div className="App">
           <h1>
@@ -89,6 +100,16 @@ export default function CountdownPage() {
           <p className="info">
               Please wait while we search for your best peer-mate!
           </p>
+          <Box textAlign='center'>
+            <Button onClick={returnHome}
+                type="submit"
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                startIcon={<CancelIcon />}
+              >
+                Cancel
+            </Button>
+          </Box>
       </div>
   );
 }

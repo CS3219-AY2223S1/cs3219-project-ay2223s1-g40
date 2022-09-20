@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import "./styles.css";
 
-import { io } from "socket.io-client";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -9,7 +8,8 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 import { useSearchParams } from "react-router-dom"
-import {createSearchParams, useNavigate} from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
+import SocketContext from "../context/CreateContext";
 
 // Prevent eager initialization of socket
 let socket;
@@ -34,7 +34,15 @@ const renderTime = ({ remainingTime }) => {
   );
 };
 
+
 export default function CountdownPage() {
+
+  function Socket() {
+    const socket = useContext(SocketContext);
+    return socket
+  }
+
+  socket = Socket();
 
   // Navigation
   const navigate = useNavigate();
@@ -46,7 +54,6 @@ export default function CountdownPage() {
 
   useEffect(() => { 
       // Initialize when the page is rendered
-      socket = io("http://localhost:8001");
       socket.emit("request-match", difficulty);
 
       socket.on('match-success', (hostPlayer, guestPlayer) => {
@@ -57,7 +64,6 @@ export default function CountdownPage() {
               navigate({
                   pathname: "/room",
                   search: createSearchParams({
-                    communications: socket,
                     roomID: hostPlayer
                   }).toString()
               })

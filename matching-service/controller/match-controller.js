@@ -29,6 +29,11 @@ export const respond = (io) => {
       socket.leave(roomId);
       socket.disconnect();
     })
+
+    socket.on("disconnect", async () => {
+      console.log("client disconnected");
+      await destroyMatch(socket.id);
+    })
   });
 }
 

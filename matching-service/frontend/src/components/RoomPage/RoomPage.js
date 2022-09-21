@@ -5,15 +5,12 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../context/CreateContext";
 
-
-
 export default function RoomPage() {
 
     function Socket() {
         const socket = useContext(SocketContext);
         return socket
     }
-
     const socket = Socket();
     
     const navigate = useNavigate();

@@ -3,8 +3,9 @@ import {
   ormCreateUser as _createUser,
   ormDoesUserExist as _doesUserExist,
   ormGetUser as _getUser,
+  ormLoginUser as _loginUser,
+  ormLogoutUser as _logoutUser,
 } from "../model/user-orm.js";
-import { ormCheckUser as _checkUserbyUsername } from "../model/user-orm.js";
 import bcrypt from "bcryptjs";
 
 export async function createUser(req, res) {
@@ -19,7 +20,9 @@ export async function createUser(req, res) {
 
     const checkExist = await _doesUserExist(username);
     if (checkExist) {
-      console.log("The username already exists!");
+      console.log(
+        `The username ${username} already exists! Please use a different username.`
+      );
       return res
         .status(409)
         .json({ message: "The username is already taken." });
@@ -46,33 +49,48 @@ export async function createUser(req, res) {
 export async function login(req, res) {
   try {
     const { username, password } = req.body;
-    if (!(username && password)) {
+    if (username && password) {
+      const response = await _loginUser(username, password);
+
+      if (!response) {
+        console.log("Incorrect username or password. Please try again!");
+        return res.status(400).json({
+          message: "Incorrect username or password. Please try again!",
+        });
+      }
+
+      if (response.err) {
+        console.log(`Unable to retrieve user: ${username}`);
+        return res
+          .status(400)
+          .json({ message: `Unable to retrieve user: ${username}` });
+      }
+      console.log(`User ${username} logged in successfully!`);
+      //req.session.token = response;
+      return res
+        .status(201)
+        .json({ message: "Login successful!", token: response });
+    } else {
       return res
         .status(400)
-        .json({ message: "Username and/or Password are missing" });
-    }
-
-    const checkExist = await _doesUserExist(username);
-    if (!checkExist) {
-      return res.status(400).json({ message: "User does not exist" });
-    }
-
-    const user = await _getUser(username);
-    const jwtToken = generateToken(user);
-    //const refreshToken = generateRefreshToken(user);
-
-    // abstract validation of password
-    if (bcrypt.hashSync(password, 10) === user.password) {
-      return res.status(200).json({
-        message: "Login successful",
-        data: {
-          username: user.username,
-          accessToken: jwtToken,
-        },
-      });
+        .json({ message: "Username and/or Password are missing!" });
     }
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ message: "Login failed" });
+    return res
+      .status(500)
+      .json({ message: "Login failed, authentication failed" });
   }
 }
+
+// export async function logout(req, res) {
+//   try {
+//     const { username } = req.body;
+//     if (username) {
+//       const response = await _logoutUser(username, req.session.token);
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json({ message: "Error occured when logging out" });
+//   }
+// }

@@ -20,10 +20,10 @@ client.on("error", (err) => {
   console.log("Redis error " + err);
 });
 
-export function generateToken(user) {
+export async function generateToken(user) {
   const username = user.username;
   return jwt.sign({ username: username }, process.env.JWT_SECRET_KEY, {
-    expiresIn: EXPIRATION,
+    expiresIn: TOKEN_EXPIRATION,
   });
 }
 
@@ -37,15 +37,40 @@ export function generateRefreshToken(user) {
   );
 }
 
-export function validateToken(token, secret) {
+export async function validateToken(username, token) {
   try {
-    const res = jwt.verify(token, secret);
-    return {
-      username: res.username,
-    };
+    if (await inBlacklist(token)) {
+      console.log(`ERROR: User: ${username}'s JWT is in blacklist`);
+      return null;
+    }
+
+    const res = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    if (res.username != username) {
+      return null;
+    }
+    return res;
   } catch (err) {
-    return null;
+    console.log(`ERROR: Unable to verify JWT for ${username}`);
+    return { err };
   }
+}
+
+export async function blacklistJwt(token, tokenExp) {
+  try {
+    const key = `bl_${token}`;
+    await client.set(key, token);
+    client.expireAt(key, tokenExp);
+    return true;
+  } catch (err) {
+    console.log("Error occured when adding token to blacklist");
+    console.log(err);
+    return false;
+  }
+}
+
+export async function inBlacklist(token) {
+  const inBlacklist = await client.get(`bl_${token}`);
+  return inBlacklist;
 }
 
 // export async function blacklistJwt(token) {

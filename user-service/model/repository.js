@@ -35,3 +35,7 @@ export async function doesUserExist(username) {
 export async function getUser(username) {
   return UserModel.findOne({ username: username });
 }
+
+export async function deleteUser(username) {
+  return await UserModel.deleteOne({ username: username });
+}

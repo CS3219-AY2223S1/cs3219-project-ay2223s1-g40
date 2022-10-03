@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { useSearchParams, useNavigate } from "react-router-dom";
-import SocketContext from "../context/CreateContext";
+import SocketContext from "./CreateContext";
 
 
 

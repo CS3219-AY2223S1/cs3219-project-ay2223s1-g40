@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 // @mui imports
 import Avatar from '@mui/material/Avatar';
@@ -19,6 +19,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 
 import {createSearchParams, useNavigate} from 'react-router-dom';
+import SocketContext from "../context/CreateContext";
 
 function Copyright(props) {
   return (
@@ -33,12 +34,32 @@ function Copyright(props) {
   );
 }
 
-const theme = createTheme();
-
 export default function DifficultyPage() {
 
   const [checked, setChecked] = useState([0]);
   const navigate = useNavigate();
+  const theme = createTheme();
+
+  function Socket() {
+    const socket = useContext(SocketContext);
+    return socket
+  }
+  const socket = Socket();
+
+  useEffect(() => {
+    socket.on("disconnect", () => {
+      console.log("Socket disconnected");
+      refreshPage();
+    })
+
+    return () => {
+      socket.off('disconnect');
+    };
+  }, [navigate])
+
+  const refreshPage = () => {
+    window.location.reload(true);
+  }
 
   // Handle Submit Event
   const handleSubmit = (event) => {

@@ -34,14 +34,12 @@ const renderTime = ({ remainingTime }) => {
   );
 };
 
-
 export default function CountdownPage() {
 
   function Socket() {
     const socket = useContext(SocketContext);
     return socket
   }
-
   socket = Socket();
 
   // Navigation
@@ -82,6 +80,7 @@ export default function CountdownPage() {
 
   const returnHome = event => {
     event.preventDefault()
+    socket.emit("cancel-match");
     console.log("Left")
     navigate("/difficulty")
   }

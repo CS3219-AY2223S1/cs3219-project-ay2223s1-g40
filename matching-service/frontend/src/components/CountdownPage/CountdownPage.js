@@ -40,7 +40,6 @@ export default function CountdownPage() {
     const socket = useContext(SocketContext);
     return socket
   }
-
   socket = Socket();
 
   // Navigation
@@ -81,6 +80,7 @@ export default function CountdownPage() {
 
   const returnHome = event => {
     event.preventDefault()
+    socket.emit("cancel-match");
     console.log("Left")
     navigate("/difficulty")
   }

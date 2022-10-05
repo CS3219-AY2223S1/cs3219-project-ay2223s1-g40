@@ -34,7 +34,6 @@ const renderTime = ({ remainingTime }) => {
   );
 };
 
-
 export default function CountdownPage() {
 
   function Socket() {

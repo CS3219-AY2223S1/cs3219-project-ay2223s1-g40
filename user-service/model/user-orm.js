@@ -1,6 +1,13 @@
-import { doesUserExist, getUser, createUser } from "./repository.js";
+import {
+  doesUserExist,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "./repository.js";
 import bcrypt from "bcryptjs";
-import { blacklistJwt, generateToken } from "../auth/index.js";
+const jwtDecode = require("jwt-decode");
+import { blacklistJwt, generateToken, validateToken } from "../auth/index.js";
 
 //need to separate orm functions from repository to decouple business logic from persistence
 export async function ormCreateUser(username, password) {
@@ -61,14 +68,14 @@ export async function ormLoginUser(username, password) {
 export async function ormLogoutUser(username, token) {
   try {
     const checkExist = await doesUserExist(username);
+
     if (!checkExist) {
       return false;
     }
 
-    const user = await getUser(username);
-
     // auth
-    const verify = await verifyToken(username, token);
+    const verify = await validateToken(username, token);
+
     if (!verify || verify.err) {
       console.log(`ERROR: Verification failed for ${username}`);
       return false;
@@ -87,4 +94,23 @@ export async function ormLogoutUser(username, token) {
     console.log(`ERROR: Could not retrieve user: ${username}`);
     return { err };
   }
+}
+
+export async function ormUpdateUser(token, currPassword, newPassword) {
+  const userId = jwtDecode(token).id;
+  const user = await getUser(userId);
+  if (!(await bcrypt.compare(currPassword, user.password))) {
+    // throw invalid user error
+    throw new Error("Invalid user error");
+  }
+
+  const saltRounds = 10;
+  const encryptPassword = await bcrypt.hash(newPassword, saltRounds);
+  return updateUser(userId, encryptPassword);
+}
+
+export async function ormDeleteUser(token) {
+  const userId = jwtDecode(token).id;
+  await getUser(userId);
+  return await deleteUser(userId);
 }

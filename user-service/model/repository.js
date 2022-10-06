@@ -39,3 +39,12 @@ export async function getUser(username) {
 export async function deleteUser(username) {
   return await UserModel.deleteOne({ username: username });
 }
+
+export async function updateUser(userId, newPassword) {
+  return await UserModel.updateOne(
+    { password: newPassword },
+    {
+      where: { userId },
+    }
+  );
+}

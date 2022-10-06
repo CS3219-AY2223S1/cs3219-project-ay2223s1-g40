@@ -66,10 +66,12 @@ export async function login(req, res) {
           .json({ message: `Unable to retrieve user: ${username}` });
       }
       console.log(`User ${username} logged in successfully!`);
-      //req.session.token = response;
-      return res
-        .status(201)
-        .json({ message: "Login successful!", token: response });
+      req.session.token = response;
+      return res.status(201).json({
+        message: "Login successful!",
+        token: response,
+        session: req.session,
+      });
     } else {
       return res
         .status(400)
@@ -83,14 +85,28 @@ export async function login(req, res) {
   }
 }
 
-// export async function logout(req, res) {
-//   try {
-//     const { username } = req.body;
-//     if (username) {
-//       const response = await _logoutUser(username, req.session.token);
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ message: "Error occured when logging out" });
-//   }
-// }
+export async function logout(req, res) {
+  try {
+    const { username } = req.body;
+    if (username) {
+      const response = await _logoutUser(username, req.session.token);
+      if (!response) {
+        console.log("User does not exist!");
+        return res.status(400).json({ message: "User does not exist!" });
+      }
+      if (response.err) {
+        console.log(`Unable to retrieve user: ${username}`);
+        return res
+          .status(400)
+          .json({ message: `Unable to retrieve user: ${username}` });
+      }
+      console.log(`User ${username} logged out successfully!`);
+      return res.status(201).json({ message: "Logout successful!" });
+    } else {
+      return res.status(400).json({ message: "Username is missing!" });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Error occured when logging out" });
+  }
+}

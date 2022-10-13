@@ -1,54 +1,58 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
 // @mui imports
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Box from '@mui/material/Box';
-import StickyNote2RoundedIcon from '@mui/icons-material/StickyNote2Rounded';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
-import HistoryIcon from '@mui/icons-material/History';
-import LogoutIcon from '@mui/icons-material/Logout';
-import LockResetIcon from '@mui/icons-material/LockReset';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Box from "@mui/material/Box";
+import StickyNote2RoundedIcon from "@mui/icons-material/StickyNote2Rounded";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import HistoryIcon from "@mui/icons-material/History";
+import LogoutIcon from "@mui/icons-material/Logout";
+import LockResetIcon from "@mui/icons-material/LockReset";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import NavigationBar from "./NavBar";
 
-
-import {createSearchParams, useNavigate} from 'react-router-dom';
+import { createSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "./CreateContext";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
       <Link color="inherit" href="https://www.nus.edu.sg/">
         National University of Singapore
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
 
 export default function DifficultyPage() {
-
   const [checked, setChecked] = useState([0]);
   const navigate = useNavigate();
   const theme = createTheme();
 
   function Socket() {
     const socket = useContext(SocketContext);
-    return socket
+    return socket;
   }
   const socket = Socket();
 
@@ -56,16 +60,16 @@ export default function DifficultyPage() {
     socket.on("disconnect", () => {
       console.log("Socket disconnected");
       refreshPage();
-    })
+    });
 
     return () => {
-      socket.off('disconnect');
+      socket.off("disconnect");
     };
-  }, [navigate])
+  }, [navigate]);
 
   const refreshPage = () => {
     window.location.reload(true);
-  }
+  };
 
   // Handle Submit Event
   const handleSubmit = (event) => {
@@ -75,12 +79,11 @@ export default function DifficultyPage() {
       navigate({
         pathname: "/countdown",
         search: createSearchParams({
-          difficulty: checked[1]
-        }).toString()
-      })
-    }
-    else {
-      alert("Please select a difficulty!")
+          difficulty: checked[1],
+        }).toString(),
+      });
+    } else {
+      alert("Please select a difficulty!");
     }
   };
 
@@ -99,55 +102,65 @@ export default function DifficultyPage() {
   // Webpage Render
   return (
     <ThemeProvider theme={theme}>
+      <NavigationBar isAuthenticated={true} />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
+
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
           {/*The Title*/}
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <StickyNote2RoundedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Welcome to PeerPrep!
           </Typography>
           <Typography component="sub" align="center">
-            In order to ensure a customized experience, please choose the difficulty of the interview questions
-            you would like to see.
+            In order to ensure a customized experience, please choose the
+            difficulty of the interview questions you would like to see.
           </Typography>
-        
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          {/*The List*/}
-            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-              {['Beginner', 'Intermediate', 'Advanced'].map((value) => {
+
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
+            {/*The List*/}
+            <List
+              sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+            >
+              {["Beginner", "Intermediate", "Advanced"].map((value) => {
                 const labelId = `checkbox-list-label-${value}`;
                 return (
-                <ListItem
-                  key={value}
-                  secondaryAction={
-                    <IconButton edge="end">
-                    </IconButton>
-                    }
-                  disablePadding
-                >
-                  <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                    <ListItemIcon>
-                      <Checkbox
-                        edge="start"
-                        checked={checked.indexOf(value) !== -1}
-                        tabIndex={-1}
-                        disableRipple
-                        inputProps={{ 'aria-labelledby': labelId }}
+                  <ListItem
+                    key={value}
+                    secondaryAction={<IconButton edge="end"></IconButton>}
+                    disablePadding
+                  >
+                    <ListItemButton
+                      role={undefined}
+                      onClick={handleToggle(value)}
+                      dense
+                    >
+                      <ListItemIcon>
+                        <Checkbox
+                          edge="start"
+                          checked={checked.indexOf(value) !== -1}
+                          tabIndex={-1}
+                          disableRipple
+                          inputProps={{ "aria-labelledby": labelId }}
                         />
-                    </ListItemIcon>
-                    <ListItemText id={1} primary={value} />
-                  </ListItemButton>
-                </ListItem>
+                      </ListItemIcon>
+                      <ListItemText id={1} primary={value} />
+                    </ListItemButton>
+                  </ListItem>
                 );
               })}
             </List>
@@ -160,34 +173,33 @@ export default function DifficultyPage() {
               Submit
             </Button>
           </Box>
-          
-          
+
           <Stack direction="row" alignItems="center" spacing={10}>
-            <Box sx={{textAlign: 'center', flexDirection: 'column'}}>
-            <IconButton size="large">
-              <HistoryIcon fontSize="large" />
-            </IconButton>
-            Question History
+            <Box sx={{ textAlign: "center", flexDirection: "column" }}>
+              <IconButton size="large">
+                <HistoryIcon fontSize="large" />
+              </IconButton>
+              Question History
             </Box>
-            <Box sx={{textAlign: 'center'}}>
-            <IconButton aria-label="logout" size="large">
-              <LogoutIcon fontSize="large" />
-            </IconButton>
-            Log Out Account
+            <Box sx={{ textAlign: "center" }}>
+              <IconButton aria-label="logout" size="large">
+                <LogoutIcon fontSize="large" />
+              </IconButton>
+              Log Out Account
             </Box>
-            <Box sx={{textAlign: 'center'}}>
-            <IconButton aria-label="reset" size="large">
-              <LockResetIcon fontSize="large"/>
-            </IconButton>
-            Reset Password
+            <Box sx={{ textAlign: "center" }}>
+              <IconButton aria-label="reset" size="large">
+                <LockResetIcon fontSize="large" />
+              </IconButton>
+              Reset Password
             </Box>
             <Box>
-            <IconButton aria-label="remove" size="large">
-              <PersonRemoveIcon fontSize="large" />
-            </IconButton>
-            Remove Account
+              <IconButton aria-label="remove" size="large">
+                <PersonRemoveIcon fontSize="large" />
+              </IconButton>
+              Remove Account
             </Box>
-        </Stack>
+          </Stack>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>

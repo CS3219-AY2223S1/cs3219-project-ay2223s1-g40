@@ -105,12 +105,12 @@ function LoginPage() {
         path: "/",
         expires: new Date(jwtDecode(refreshToken).exp * 1000),
       });
-      navigate("/landing");
+      navigate("/difficulty");
     }
   };
 
   return cookies["refresh_token"] ? (
-    <Navigate to="/landing" />
+    <Navigate to="/difficulty" />
   ) : (
     <>
       <NavigationBar isAuthenticated={false} />

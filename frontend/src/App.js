@@ -8,7 +8,7 @@ import SignupPage from "./components/SignupPage";
 import LoginPage from "./components/LoginPage";
 import LandingPage from "./components/LandingPage";
 import HomePage from "./components/HomePage";
-import DifficultyPage from './components/DifficultyPage';
+import DifficultyPage from "./components/DifficultyPage";
 import CountdownPage from "./components/CountdownPage";
 import RoomPage from "./components/RoomPage";
 
@@ -30,9 +30,16 @@ function App() {
             ></Route>
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/difficulty/*" element={<DifficultyPage/>}/>
-            <Route path="/countdown" element={<CountdownPage/>}/>
-            <Route path="/room" element={<RoomPage/>}/>
+            <Route
+              path="/difficulty/*"
+              element={
+                <PrivateRoute>
+                  <DifficultyPage />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/countdown" element={<CountdownPage />} />
+            <Route path="/room" element={<RoomPage />} />
             <Route
               path="/landing"
               element={
@@ -45,7 +52,7 @@ function App() {
               path="/home"
               element={
                 <PrivateRoute>
-                  <HomePage />{" "}
+                  <HomePage />
                 </PrivateRoute>
               }
             />

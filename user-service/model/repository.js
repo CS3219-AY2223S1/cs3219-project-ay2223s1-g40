@@ -28,23 +28,23 @@ export async function createUser(params) {
   return new UserModel(params);
 }
 
-export async function doesUserExist(username) {
-  return UserModel.exists({ username: username });
+// Returns the user document, if username does not exist, throws an error
+export async function getUser(username) {
+  let user = await UserModel.findOne({ username: username }).exec();
+  return user;
 }
 
-export async function getUser(username) {
-  return UserModel.findOne({ username: username });
+export async function updatePassword(username, newPassword) {
+  let updatedUser = await UserModel.findOneAndUpdate(
+    { username: username },
+    { password: newPassword }
+  );
+  return updatedUser;
 }
 
 export async function deleteUser(username) {
-  return await UserModel.deleteOne({ username: username });
-}
-
-export async function updateUser(userId, newPassword) {
-  return await UserModel.updateOne(
-    { password: newPassword },
-    {
-      where: { userId },
-    }
-  );
+  const deletedCount = await (
+    await UserModel.deleteOne({ username: username })
+  ).deletedCount;
+  return deletedCount == 1;
 }

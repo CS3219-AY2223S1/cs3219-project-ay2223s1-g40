@@ -1,5 +1,3 @@
-*/node_modules/*
-
 package-lock.json
 .env
 
@@ -42,3 +40,6 @@ yarn-error.log*
 next-env.d.ts
 
 .DS_Store
+
+node_modules/*
+.env

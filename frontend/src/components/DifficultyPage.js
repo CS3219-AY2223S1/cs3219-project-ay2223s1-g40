@@ -19,7 +19,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 
 import {createSearchParams, useNavigate} from 'react-router-dom';
-import SocketContext from "../context/CreateContext";
+import SocketContext from "./CreateContext";
 
 function Copyright(props) {
   return (

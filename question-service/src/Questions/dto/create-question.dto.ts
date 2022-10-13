@@ -7,5 +7,9 @@ export class CreateQuestionDto {
 
   @IsString()
   @IsNotEmpty()
-  question: string;
+  title: string;
+
+  @IsString()
+  @IsNotEmpty()
+  body: string;
 }

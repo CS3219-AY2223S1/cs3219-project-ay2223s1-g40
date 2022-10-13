@@ -9,7 +9,10 @@ export class Question {
   difficulty: string;
 
   @Prop({ required: true })
-  question: string;
+  title: string;
+
+  @Prop({ required: true })
+  body: string;
 }
 
 export const QuestionSchema = SchemaFactory.createForClass(Question);

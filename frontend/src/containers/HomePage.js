@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { URL_USER_LOGOUT, URL_USER_SVC } from "../configs";
 import { useCookies } from "react-cookie";
 import { URL_USER_SVC_LOGOUT } from "../configs";
-import NavigationBar from "./NavBar";
+import NavigationBar from "../components/NavBar";
 import axios from "axios";
 
 import { useNavigate } from "react-router-dom";

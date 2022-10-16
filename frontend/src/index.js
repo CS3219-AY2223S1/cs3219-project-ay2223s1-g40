@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { SocketProvider } from "./components/CreateContext"
+import { SocketProvider } from "./contexts/CreateContext"
 import { io } from "socket.io-client";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

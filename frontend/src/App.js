@@ -4,17 +4,17 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import SignupPage from "./components/SignupPage";
-import LoginPage from "./components/LoginPage";
-import LandingPage from "./components/LandingPage";
-import HomePage from "./components/HomePage";
-import DifficultyPage from "./components/DifficultyPage";
-import CountdownPage from "./components/CountdownPage";
-import RoomPage from "./components/RoomPage";
+import SignupPage from "./containers/SignupPage";
+import LoginPage from "./containers/LoginPage";
+import LandingPage from "./containers/LandingPage";
+import HomePage from "./containers/HomePage";
+import DifficultyPage from "./containers/DifficultyPage";
+import CountdownPage from "./containers/CountdownPage";
+import RoomPage from "./containers/RoomPage";
 
 // import NavigationBar from "./components/NavigationBar";
 import { Box } from "@mui/material";
-import { PrivateRoute } from "./components/PrivateRoute";
+import { PrivateRoute } from "./containers/PrivateRoute";
 
 function App() {
   return (

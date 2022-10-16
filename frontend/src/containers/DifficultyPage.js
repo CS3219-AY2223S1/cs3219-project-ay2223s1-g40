@@ -22,10 +22,10 @@ import HistoryIcon from "@mui/icons-material/History";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
-import NavigationBar from "./NavBar";
+import NavigationBar from "../components/NavBar";
 
 import { createSearchParams, useNavigate } from "react-router-dom";
-import SocketContext from "./CreateContext";
+import SocketContext from "../contexts/CreateContext";
 
 function Copyright(props) {
   return (

@@ -14,7 +14,7 @@ import axios from "axios";
 import { URL_USER_SVC_CREATEUSER } from "../configs";
 import { STATUS_CODE_INVALID_SIGNUP, STATUS_CODE_CREATED } from "../constants";
 import { Link } from "react-router-dom";
-import NavigationBar from "./NavBar";
+import NavigationBar from "../components/NavBar";
 
 function SignupPage() {
   const [email, setEmail] = useState("");

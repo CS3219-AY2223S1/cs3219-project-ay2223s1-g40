@@ -173,33 +173,6 @@ export default function DifficultyPage() {
               Submit
             </Button>
           </Box>
-
-          <Stack direction="row" alignItems="center" spacing={10}>
-            <Box sx={{ textAlign: "center", flexDirection: "column" }}>
-              <IconButton size="large">
-                <HistoryIcon fontSize="large" />
-              </IconButton>
-              Question History
-            </Box>
-            <Box sx={{ textAlign: "center" }}>
-              <IconButton aria-label="logout" size="large">
-                <LogoutIcon fontSize="large" />
-              </IconButton>
-              Log Out Account
-            </Box>
-            <Box sx={{ textAlign: "center" }}>
-              <IconButton aria-label="reset" size="large">
-                <LockResetIcon fontSize="large" />
-              </IconButton>
-              Reset Password
-            </Box>
-            <Box>
-              <IconButton aria-label="remove" size="large">
-                <PersonRemoveIcon fontSize="large" />
-              </IconButton>
-              Remove Account
-            </Box>
-          </Stack>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>

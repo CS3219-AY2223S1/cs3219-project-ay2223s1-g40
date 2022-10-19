@@ -4,13 +4,13 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import SignupPage from "./containers/SignupPage";
-import LoginPage from "./containers/LoginPage";
-import LandingPage from "./containers/LandingPage";
-import HomePage from "./containers/HomePage";
-import DifficultyPage from "./containers/DifficultyPage";
-import CountdownPage from "./containers/CountdownPage";
-import RoomPage from "./containers/RoomPage";
+import SignupPage from "./components/SignupPage";
+import LoginPage from "./components/LoginPage";
+import LandingPage from "./components/LandingPage";
+import ProfilePage from "./components/ProfilePage";
+import DifficultyPage from "./components/DifficultyPage";
+import CountdownPage from "./components/CountdownPage";
+import RoomPage from "./components/RoomPage";
 
 // import NavigationBar from "./components/NavigationBar";
 import { Box } from "@mui/material";
@@ -49,10 +49,11 @@ function App() {
               }
             />
             <Route
-              path="/home"
+              path="/profile"
               element={
                 <PrivateRoute>
-                  <HomePage />
+                  {" "}
+                  <ProfilePage />
                 </PrivateRoute>
               }
             />

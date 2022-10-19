@@ -61,7 +61,8 @@ export default function CountdownPage() {
             navigate({
                 pathname: "/room",
                 search: createSearchParams({
-                  roomID: hostPlayer
+                  roomID: hostPlayer,
+                  difficulty: difficulty
                 }).toString()
             })
         }

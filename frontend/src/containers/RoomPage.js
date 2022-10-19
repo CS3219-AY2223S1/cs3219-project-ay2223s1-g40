@@ -91,16 +91,16 @@ export default function RoomPage() {
     const [questionDescription, setQuestionDescription] = useState("");
     useEffect(() => {
         if (socket.id === roomID) {
-            socket.emit("request-question", difficulty);
+            socket.emit("request-question", { difficulty, roomID });
         }
-        socket.on('distribute-question', (question) => {
+        socket.on("distribute-question", (question) => {
             console.log(question);
-            setQuestionTitle(question.title);
-            setQuestionDescription(question.description);
+            setQuestionTitle(question.existingQuestion.title);
+            setQuestionDescription(question.existingQuestion.body);
         })
 
         return () => {
-            socket.off('distribute-question');
+            socket.off("distribute-question");
         }
     }, []);
 
@@ -111,6 +111,8 @@ export default function RoomPage() {
             </h1>
             <h1>
                 Room ID: {roomID}
+                Question Title: {questionTitle} 
+                Question Description: {questionDescription}
             </h1>
             <Button onClick={returnHome}
               type="submit"

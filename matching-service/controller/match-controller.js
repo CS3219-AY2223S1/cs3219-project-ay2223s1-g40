@@ -35,10 +35,10 @@ export const respond = (io) => {
       await destroyMatch(socket.id);
     })
 
-    socket.on("request-question", async (difficulty, roomID) => {
+    socket.on("request-question", async ({ difficulty, roomID }) => {
       const response = await fetch('http://localhost:3002/questions/difficulty/' + difficulty)
       const question = await response.json();
-      socket.to(roomID).emit("distribute-question", question);
+      socket.nsp.to(roomID).emit("distribute-question", question);
     })
   });
 }

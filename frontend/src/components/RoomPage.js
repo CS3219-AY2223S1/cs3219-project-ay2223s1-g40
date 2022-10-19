@@ -24,12 +24,37 @@ export default function RoomPage() {
     // Retrieve Info
     const [searchparams] = useSearchParams();
     const roomID = searchparams.get("roomID")
+    const questionID = searchparams.get("questionID")
+    let question = '';
     console.log("Received as: " + roomID)
+    console.log("Question ID: " + questionID)
+
+    async function retrieveQuestion(questionID) {
+        const response = await fetch('http://localhost:3001/Questions')
+        const json = await response.json();
+        return json.QuestionData;
+    }
+
+    function scrapeQuestion(data, questionID) {
+        for (let i = 0; i < data.length; i++) {
+            if (data[i]._id === questionID) {
+                return data[i].body;
+            }
+        }
+    }
+
+    console.log(retrieveQuestion(questionID).then(
+        (data) => {
+            return scrapeQuestion(data, questionID);
+        }
+    ))
 
     return (
         <Box>
             <h1>
                 Room
+            </h1>
+            <h1>
             </h1>
             <h1>
                 Room ID: {roomID}

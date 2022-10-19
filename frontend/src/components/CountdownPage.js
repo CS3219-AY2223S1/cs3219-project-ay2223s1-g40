@@ -50,6 +50,15 @@ export default function CountdownPage() {
   const difficulty = searchparams.get("difficulty");
   console.log("Received as: " + difficulty)
 
+  // Get Question ID
+  let parsedDifficulty = difficulty.toLowerCase();
+  async function getQuestionID(difficulty) {
+    const response = await fetch('http://localhost:3001/Questions/Difficulty/' + difficulty)
+    const json = await response.json();
+    return json.existingQuestion._id;
+  }
+
+
   useEffect(() => { 
       // Initialize when the page is rendered
       socket.emit("request-match", difficulty);
@@ -59,12 +68,18 @@ export default function CountdownPage() {
           if (socket.id === hostPlayer || socket.id === guestPlayer) {
               socket.emit("join-room", hostPlayer);
               console.log("Joining Room");
-              navigate({
-                  pathname: "/room",
-                  search: createSearchParams({
-                    roomID: hostPlayer
-                  }).toString()
-              })
+
+              getQuestionID(parsedDifficulty).then(
+                (data) => {
+                  navigate({
+                    pathname: "/room",
+                    search: createSearchParams({
+                      roomID: hostPlayer,
+                      questionID: data
+                    }).toString()
+                })
+                }
+              );
           }
       })
 

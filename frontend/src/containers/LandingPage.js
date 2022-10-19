@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 import GroupIcon from "@mui/icons-material/Group";
-import NavigationBar from "./NavBar";
+import NavigationBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
 
 function LandingPage() {

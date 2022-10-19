@@ -20,7 +20,7 @@ import {
   STATUS_DATABASE_FAILURE,
 } from "../constants";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import NavigationBar from "./NavBar";
+import NavigationBar from "../components/NavBar";
 import { jwtDecode } from "../util/auth";
 
 function LoginPage() {
@@ -95,6 +95,7 @@ function LoginPage() {
 
     if (res && res.status === STATUS_CODE_LOGIN) {
       setIsLoggedIn(true);
+      console.log(res);
       const accessToken = res.data.accessToken;
       const refreshToken = res.data.refreshToken;
       setCookie("access_token", accessToken, {

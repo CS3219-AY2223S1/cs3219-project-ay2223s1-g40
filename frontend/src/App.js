@@ -14,7 +14,7 @@ import RoomPage from "./components/RoomPage";
 
 // import NavigationBar from "./components/NavigationBar";
 import { Box } from "@mui/material";
-import { PrivateRoute } from "./components/PrivateRoute";
+import { PrivateRoute } from "./containers/PrivateRoute";
 
 function App() {
   return (

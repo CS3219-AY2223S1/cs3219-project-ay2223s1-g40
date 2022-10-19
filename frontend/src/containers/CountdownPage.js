@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 
 import { useSearchParams } from "react-router-dom"
 import { createSearchParams, useNavigate } from 'react-router-dom';
-import SocketContext from "./CreateContext";
+import SocketContext from "../contexts/CreateContext";
 
 // Prevent eager initialization of socket
 let socket;

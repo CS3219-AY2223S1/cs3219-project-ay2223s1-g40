@@ -9,9 +9,8 @@ import Box from '@mui/material/Box';
 
 import { useSearchParams } from "react-router-dom"
 import { createSearchParams, useNavigate } from 'react-router-dom';
-import SocketContext from "./CreateContext";
+import SocketContext from "../contexts/CreateContext";
 
-// Prevent eager initialization of socket
 let socket;
 
 const renderTime = ({ remainingTime }) => {
@@ -38,7 +37,7 @@ export default function CountdownPage() {
 
   function Socket() {
     const socket = useContext(SocketContext);
-    return socket
+    return socket;
   }
   socket = Socket();
 
@@ -50,54 +49,39 @@ export default function CountdownPage() {
   const difficulty = searchparams.get("difficulty");
   console.log("Received as: " + difficulty)
 
-  // Get Question ID
-  let parsedDifficulty = difficulty.toLowerCase();
-  async function getQuestionID(difficulty) {
-    const response = await fetch('http://localhost:3001/Questions/Difficulty/' + difficulty)
-    const json = await response.json();
-    return json.existingQuestion._id;
-  }
-
-
   useEffect(() => { 
-      // Initialize when the page is rendered
-      socket.emit("request-match", difficulty);
+    // Initialize when the page is rendered
+    socket.emit("request-match", difficulty);
 
-      socket.on('match-success', (hostPlayer, guestPlayer) => {
-        console.log("received");
-          if (socket.id === hostPlayer || socket.id === guestPlayer) {
-              socket.emit("join-room", hostPlayer);
-              console.log("Joining Room");
+    socket.on('match-success', (hostPlayer, guestPlayer) => {
+      console.log("received");
+        if (socket.id === hostPlayer || socket.id === guestPlayer) {
+            socket.emit("join-room", hostPlayer);
+            console.log("Joining Room");
+            navigate({
+                pathname: "/room",
+                search: createSearchParams({
+                  roomID: hostPlayer
+                }).toString()
+            })
+        }
+    })
 
-              getQuestionID(parsedDifficulty).then(
-                (data) => {
-                  navigate({
-                    pathname: "/room",
-                    search: createSearchParams({
-                      roomID: hostPlayer,
-                      questionID: data
-                    }).toString()
-                })
-                }
-              );
-          }
-      })
-
-      socket.on("disconnect", (reason) => {
-        console.log("Socket disconnected")
-      })
-      
-      return () => {
-        socket.off('match-success');
-        socket.off('disconnect');
-      };
+    socket.on("disconnect", (reason) => {
+      console.log("Socket disconnected")
+    })
+    
+    return () => {
+      socket.off('match-success');
+      socket.off('disconnect');
+    };
   }, [difficulty, navigate]);
 
   const returnHome = event => {
-    event.preventDefault()
+    event.preventDefault();
     socket.emit("cancel-match");
-    console.log("Left")
-    navigate("/difficulty")
+    console.log("Left");
+    navigate("/difficulty");
   }
 
   return (

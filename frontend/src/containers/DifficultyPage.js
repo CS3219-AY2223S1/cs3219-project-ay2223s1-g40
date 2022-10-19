@@ -22,10 +22,10 @@ import HistoryIcon from "@mui/icons-material/History";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
-import NavigationBar from "./NavBar";
+import NavigationBar from "../components/NavBar";
 
 import { createSearchParams, useNavigate } from "react-router-dom";
-import SocketContext from "./CreateContext";
+import SocketContext from "../contexts/CreateContext";
 
 function Copyright(props) {
   return (
@@ -79,7 +79,7 @@ export default function DifficultyPage() {
       navigate({
         pathname: "/countdown",
         search: createSearchParams({
-          difficulty: checked[1],
+          difficulty: checked[1].toLowerCase(),
         }).toString(),
       });
     } else {
@@ -173,33 +173,6 @@ export default function DifficultyPage() {
               Submit
             </Button>
           </Box>
-
-          <Stack direction="row" alignItems="center" spacing={10}>
-            <Box sx={{ textAlign: "center", flexDirection: "column" }}>
-              <IconButton size="large">
-                <HistoryIcon fontSize="large" />
-              </IconButton>
-              Question History
-            </Box>
-            <Box sx={{ textAlign: "center" }}>
-              <IconButton aria-label="logout" size="large">
-                <LogoutIcon fontSize="large" />
-              </IconButton>
-              Log Out Account
-            </Box>
-            <Box sx={{ textAlign: "center" }}>
-              <IconButton aria-label="reset" size="large">
-                <LockResetIcon fontSize="large" />
-              </IconButton>
-              Reset Password
-            </Box>
-            <Box>
-              <IconButton aria-label="remove" size="large">
-                <PersonRemoveIcon fontSize="large" />
-              </IconButton>
-              Remove Account
-            </Box>
-          </Stack>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>

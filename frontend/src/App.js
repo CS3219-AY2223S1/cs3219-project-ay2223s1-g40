@@ -7,14 +7,14 @@ import {
 import SignupPage from "./components/SignupPage";
 import LoginPage from "./components/LoginPage";
 import LandingPage from "./components/LandingPage";
-import HomePage from "./components/HomePage";
+import ProfilePage from "./components/ProfilePage";
 import DifficultyPage from "./components/DifficultyPage";
 import CountdownPage from "./components/CountdownPage";
 import RoomPage from "./components/RoomPage";
 
 // import NavigationBar from "./components/NavigationBar";
 import { Box } from "@mui/material";
-import { PrivateRoute } from "./components/PrivateRoute";
+import { PrivateRoute } from "./containers/PrivateRoute";
 
 function App() {
   return (
@@ -49,10 +49,11 @@ function App() {
               }
             />
             <Route
-              path="/home"
+              path="/profile"
               element={
                 <PrivateRoute>
-                  <HomePage />
+                  {" "}
+                  <ProfilePage />
                 </PrivateRoute>
               }
             />

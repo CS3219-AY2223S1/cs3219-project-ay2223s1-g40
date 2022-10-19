@@ -5,8 +5,10 @@ import {
   Typography,
   Dialog,
   DialogTitle,
+  IconButton,
+  Modal,
 } from "@mui/material";
-
+import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import { URL_USER_LOGOUT, URL_USER_SVC } from "../configs";
 import { useCookies } from "react-cookie";
@@ -17,9 +19,39 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "../util/auth";
 
-const HomePage = () => {
+const ProfilePage = () => {
+  const [changePassword, setChangePassword] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [deleteAccount, setDeleteAccount] = useState(false);
+
+  const handleChangePassword = () => {
+    setAnchorEl(null);
+    setChangePassword(true);
+  };
+
+  const handleDeleteAccount = () => {
+    setAnchorEl(null);
+    setDeleteAccount(true);
+  };
+
+  const handleCloseChangePassword = () => {
+    setChangePassword(false);
+    setNewPassword("");
+  };
+
+  const handleCloseDeleteAccount = () => {
+    setDeleteAccount(false);
+  };
+
+  const handleChangePasswordOnClick = () => {
+    setAnchorEl(null);
+    // Triggers change password!
+  };
+
+  const handleDeleteAccountOnClick = () => {
+    setAnchorEl(null);
+  };
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
@@ -105,6 +137,17 @@ const HomePage = () => {
   //   setIsConfirm(false);
   //   setIsDialogOpen(false);
   // };
+  const modalStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    borderRadius: "5px",
+    boxShadow: 24,
+    p: 4,
+  };
 
   return (
     <>
@@ -112,7 +155,12 @@ const HomePage = () => {
 
       <Box display={"flex"} flexDirection={"column"} width={"90%"}>
         <Box>
-          <Typography variant={"h4"} align="center" marginBottom={"2rem"}>
+          <Typography
+            variant={"h4"}
+            align="center"
+            marginBottom={"2rem"}
+            marginTop={"2rem"}
+          >
             Account Settings
           </Typography>
         </Box>
@@ -122,13 +170,109 @@ const HomePage = () => {
           justifyContent={"center"}
           marginBottom={"1rem"}
         >
-          <Button
-            onClick={handleLogout}
-            variant={"outlined"}
-            sx={{ width: 1 / 2 }}
+          {/* Change Password Modal */}
+          <Modal
+            open={changePassword}
+            onClose={handleCloseChangePassword}
+            aria-labelledby="modal-modal-title"
           >
-            Logout
-          </Button>
+            <Box sx={modalStyle}>
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                justifyContent={"space-between"}
+              >
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Change Password
+                </Typography>
+                <IconButton onClick={handleCloseChangePassword}>
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+              <TextField
+                id="outlined-password-input"
+                label="Old Password"
+                type="password"
+                variant="outlined"
+                value={newPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                sx={{ marginTop: "1rem", marginBottom: "1rem" }}
+                autoFocus
+              />
+              <TextField
+                id="outlined-password-input"
+                label="New Password"
+                type="password"
+                variant="outlined"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                sx={{ marginTop: "1rem", marginBottom: "1rem" }}
+                autoFocus
+              />
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                justifyContent={"flexStart"}
+                style={{ paddingTop: "5%" }}
+              >
+                <Button
+                  variant={"contained"}
+                  onClick={handleChangePasswordOnClick}
+                >
+                  Confirm New Password
+                </Button>
+              </Box>
+            </Box>
+          </Modal>
+          {/* Delete Account Modal */}
+          <Modal
+            open={deleteAccount}
+            onClose={handleCloseDeleteAccount}
+            aria-labelledby="modal-modal-title"
+          >
+            <Box sx={modalStyle}>
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                justifyContent={"space-between"}
+              >
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Delete Account
+                </Typography>
+                <IconButton onClick={handleCloseDeleteAccount}>
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                This action is permanent and cannot be undone. If you're sure
+                that you want to delete your account, please press "Confirm".
+              </Typography>
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                justifyContent={"flexStart"}
+                style={{ paddingTop: "5%" }}
+              >
+                <Button
+                  variant={"contained"}
+                  onClick={handleDeleteAccountOnClick}
+                >
+                  Confirm
+                </Button>
+              </Box>
+            </Box>
+          </Modal>
+          <div className="flex flex-col gap-4 w-1/2">
+            <Button onClick={handleChangePassword} variant={"outlined"}>
+              Change Password
+            </Button>
+            <Button onClick={handleDeleteAccount} variant={"outlined"}>
+              Delete Account
+            </Button>
+            <Button onClick={handleLogout} variant={"outlined"}>
+              Logout
+            </Button>
+          </div>
         </Box>
 
         {/* <Box display={"flex"} flexDirection={"row"} justifyContent={"center"}>
@@ -202,4 +346,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default ProfilePage;

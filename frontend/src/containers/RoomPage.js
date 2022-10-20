@@ -114,16 +114,17 @@ export default function RoomPage() {
             </Box>
             <Box
                 sx={{
-                    marginTop: 8,
+                    margin: 8,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                 }}>
                 <Typography component="h1" variant="h5">
-                    Two Sum {questionTitle}
+                    {questionTitle}
                 </Typography>
                 <div class="content__u3I1">
-                    <p>
+                    {questionDescription}
+                    {/* <p>
                         Given an array of integers <code>
                             nums
                         </code> and an integer <code>
@@ -142,9 +143,10 @@ export default function RoomPage() {
                     </p>
                     <p>
                         You can return the answer in any order.
-                    </p>
+                    </p> */}
                 </div>
             </Box>
+            <div id="container" ref = {wrapperRef}></div>
             <Button onClick={returnHome}
               type="submit"
               variant="contained"
@@ -153,7 +155,6 @@ export default function RoomPage() {
             >
               Return
             </Button>
-            <div id="container" ref = {wrapperRef}></div>
         </Box>
     )
 }

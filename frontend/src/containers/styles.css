@@ -32,3 +32,12 @@ h1 {
     text-align: center;
     font-size: 16px;
   }
+
+  .content__u3I1 code {
+    color: #546e7a;
+    background-color: #f7f9fa;
+    padding: 2px 4px;
+    font-size: 13px;
+    border-radius: 3px;
+    font-family: monospace;
+}

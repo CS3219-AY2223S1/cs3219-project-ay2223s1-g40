@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../contexts/CreateContext";
+import Typography from "@mui/material/Typography";
 
 import io from 'socket.io-client';
 import "quill/dist/quill.snow.css";
@@ -106,14 +107,44 @@ export default function RoomPage() {
 
     return (
         <Box>
-            <h1>
-                Room
-            </h1>
+            <Box>
             <h1>
                 Room ID: {roomID}
-                Question Title: {questionTitle} 
-                Question Description: {questionDescription}
             </h1>
+            </Box>
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}>
+                <Typography component="h1" variant="h5">
+                    Two Sum {questionTitle}
+                </Typography>
+                <div class="content__u3I1">
+                    <p>
+                        Given an array of integers <code>
+                            nums
+                        </code> and an integer <code>
+                            target
+                        </code>
+                        , return <em>
+                        indices of the two numbers such that they add up to <code>
+                            target
+                        </code>
+                        </em>.
+                    </p>
+                    <p>
+                        You may assume that each input would have 
+                        <strong><em> exactly one solution</em></strong>
+                        , and you may not use the <em>same</em> element twice.
+                    </p>
+                    <p>
+                        You can return the answer in any order.
+                    </p>
+                </div>
+            </Box>
             <Button onClick={returnHome}
               type="submit"
               variant="contained"

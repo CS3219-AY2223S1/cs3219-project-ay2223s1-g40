@@ -4,16 +4,37 @@ import Box from '@mui/material/Box';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../contexts/CreateContext";
+import Typography from "@mui/material/Typography";
 
 import io from 'socket.io-client';
 import "quill/dist/quill.snow.css";
 import Quill from "quill";
 
 export default function RoomPage() {
+    // Initialization
+    function Socket() {
+        const socket = useContext(SocketContext);
+        return socket;
+    }
+    const socket = Socket();
 
+    const navigate = useNavigate();
+    const returnHome = event => {
+        event.preventDefault()
+        socket.emit("leave-room");
+        console.log("Left")
+        navigate("/difficulty")
+    }
+
+    // Retrieve Info
+    const [searchparams] = useSearchParams();
+    const roomID = searchparams.get("roomID");
+    const difficulty = searchparams.get("difficulty");
+    console.log("Received as: " + roomID);
+
+    // Collab Service
     const [collabSocket, setCollabSocket] = useState();
     const [quill, setQuill] = useState();
-
     useEffect(() => {
         const collabS = io("http://localhost:3001");
         setCollabSocket(collabS);
@@ -66,33 +87,66 @@ export default function RoomPage() {
         };
     }, []);
 
-    function Socket() {
-        const socket = useContext(SocketContext);
-        return socket;
-    }
-    const socket = Socket();
-    
-    const navigate = useNavigate();
-    const returnHome = event => {
-        event.preventDefault()
-        socket.emit("leave-room");
-        console.log("Left")
-        navigate("/difficulty")
-    }
+    // Matching Service --> Question Service
+    const [questionTitle, setQuestionTitle] = useState("");
+    const [questionDescription, setQuestionDescription] = useState("");
+    useEffect(() => {
+        if (socket.id === roomID) {
+            socket.emit("request-question", { difficulty, roomID });
+        }
+        socket.on("distribute-question", (question) => {
+            console.log(question);
+            setQuestionTitle(question.existingQuestion.title);
+            setQuestionDescription(question.existingQuestion.body);
+        })
 
-    // Retrieve Info
-    const [searchparams] = useSearchParams();
-    const roomID = searchparams.get("roomID")
-    console.log("Received as: " + roomID)
+        return () => {
+            socket.off("distribute-question");
+        }
+    }, []);
 
     return (
         <Box>
-            <h1>
-                Room
-            </h1>
+            <Box>
             <h1>
                 Room ID: {roomID}
             </h1>
+            </Box>
+            <Box
+                sx={{
+                    margin: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}>
+                <Typography component="h1" variant="h5">
+                    {questionTitle}
+                </Typography>
+                <div class="content__u3I1">
+                    {questionDescription}
+                    {/* <p>
+                        Given an array of integers <code>
+                            nums
+                        </code> and an integer <code>
+                            target
+                        </code>
+                        , return <em>
+                        indices of the two numbers such that they add up to <code>
+                            target
+                        </code>
+                        </em>.
+                    </p>
+                    <p>
+                        You may assume that each input would have 
+                        <strong><em> exactly one solution</em></strong>
+                        , and you may not use the <em>same</em> element twice.
+                    </p>
+                    <p>
+                        You can return the answer in any order.
+                    </p> */}
+                </div>
+            </Box>
+            <div id="container" ref = {wrapperRef}></div>
             <Button onClick={returnHome}
               type="submit"
               variant="contained"
@@ -101,7 +155,6 @@ export default function RoomPage() {
             >
               Return
             </Button>
-            <div id="container" ref = {wrapperRef}></div>
         </Box>
     )
 }

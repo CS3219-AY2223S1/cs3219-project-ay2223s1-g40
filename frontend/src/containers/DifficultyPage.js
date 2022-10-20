@@ -79,7 +79,7 @@ export default function DifficultyPage() {
       navigate({
         pathname: "/countdown",
         search: createSearchParams({
-          difficulty: checked[1],
+          difficulty: checked[1].toLowerCase(),
         }).toString(),
       });
     } else {

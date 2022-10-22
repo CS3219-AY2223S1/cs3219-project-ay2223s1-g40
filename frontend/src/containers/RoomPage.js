@@ -45,6 +45,7 @@ export default function RoomPage() {
             collabS.disconnect();
         }
     }, []);
+    
 
     useEffect(() => {
         if (collabSocket == null || quill == null) {
@@ -106,6 +107,15 @@ export default function RoomPage() {
         }
     }, []);
 
+    function createMarkup(questionBody) {
+        return {__html: questionBody}
+    }
+
+    function formatHtml(questionBody) {
+        return <div class="content__u3I1 code"
+        dangerouslySetInnerHTML={createMarkup(questionBody)} />;
+    }
+
     return (
         <Box>
             <Box 
@@ -135,9 +145,7 @@ export default function RoomPage() {
                 <Typography component="h1" variant="h5">
                     {questionTitle}
                 </Typography>
-                <div class="content__u3I1">
-                    {questionDescription}
-                </div>
+                {formatHtml(questionDescription)}
             </Box>
                 <div class="float-container">
                     <div class="float-collab" id="container" ref = {wrapperRef}></div>

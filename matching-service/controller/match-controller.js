@@ -1,5 +1,5 @@
 import { ormCreateMatch as _createMatch, ormGetAvailableMatch as _getAvailableMatch, ormDestroyMatch as _destroyMatch} from '../model/match-orm.js'
-import fetch from "cross-fetch"; 
+import fetch from "cross-fetch"
 
 export const respond = (io) => {
   io.on("connection", (socket) => {

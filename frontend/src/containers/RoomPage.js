@@ -5,6 +5,7 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../contexts/CreateContext";
 import Typography from "@mui/material/Typography";
+import { borders } from '@mui/system';
 
 import io from 'socket.io-client';
 import "quill/dist/quill.snow.css";
@@ -44,6 +45,7 @@ export default function RoomPage() {
             collabS.disconnect();
         }
     }, []);
+    
 
     useEffect(() => {
         if (collabSocket == null || quill == null) {
@@ -105,56 +107,50 @@ export default function RoomPage() {
         }
     }, []);
 
+    function createMarkup(questionBody) {
+        return {__html: questionBody}
+    }
+
+    function formatHtml(questionBody) {
+        return <div class="content__u3I1 code"
+        dangerouslySetInnerHTML={createMarkup(questionBody)} />;
+    }
+
     return (
         <Box>
-            <Box>
-            <h1>
-                Room ID: {roomID}
-            </h1>
+            <Box 
+                sx={{
+                    height: '25%',
+                    margin: 2,
+                }}>
+                <Button onClick={returnHome}
+                    type="submit"
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    startIcon={<KeyboardReturnIcon />}
+                    >
+                    Return to Difficulty Page
+                </Button>
             </Box>
             <Box
                 sx={{
-                    margin: 8,
+                    margin: 2,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    textAlign: "center",
+                    borderColor: 'primary.main',
+                    borderRadius: '16px'
                 }}>
                 <Typography component="h1" variant="h5">
                     {questionTitle}
                 </Typography>
-                <div class="content__u3I1">
-                    {questionDescription}
-                    {/* <p>
-                        Given an array of integers <code>
-                            nums
-                        </code> and an integer <code>
-                            target
-                        </code>
-                        , return <em>
-                        indices of the two numbers such that they add up to <code>
-                            target
-                        </code>
-                        </em>.
-                    </p>
-                    <p>
-                        You may assume that each input would have 
-                        <strong><em> exactly one solution</em></strong>
-                        , and you may not use the <em>same</em> element twice.
-                    </p>
-                    <p>
-                        You can return the answer in any order.
-                    </p> */}
+                {formatHtml(questionDescription)}
+            </Box>
+                <div class="float-container">
+                    <div class="float-collab" id="container" ref = {wrapperRef}></div>
+                    <div class="float-chat"> Chat Box </div>
                 </div>
             </Box>
-            <div id="container" ref = {wrapperRef}></div>
-            <Button onClick={returnHome}
-              type="submit"
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              startIcon={<KeyboardReturnIcon />}
-            >
-              Return
-            </Button>
-        </Box>
     )
 }

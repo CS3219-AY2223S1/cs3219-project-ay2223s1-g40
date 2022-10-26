@@ -1,17 +1,99 @@
-import React, { useContext, useEffect, useRef, useState, useLayoutEffect } from "react";
+import React, { useContext, useEffect, useRef, useState, useLayoutEffect, Fragment} from "react";
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import { Container, Divider, FormControl, Grid, IconButton, List, ListItem, ListItemText, Paper, TextField, Typography } from "@mui/material";
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../contexts/CreateContext";
-import Typography from "@mui/material/Typography";
 import { borders } from '@mui/system';
+import SendIcon from '@mui/icons-material/Send';
 
 import io from 'socket.io-client';
 import "quill/dist/quill.snow.css";
 import Quill from "quill";
 
+
+//Chat serviced to
+export class ChatMessageDto {
+    constructor(user, message){
+        this.user = user;
+        this.message = message;
+    }
+}
+
 export default function RoomPage() {
+
+    // Chat Service Stuff
+    const ENTER_KEY_CODE = 13;
+
+    const scrollBottomRef = useRef(null);
+    const webSocket = useRef(null);
+    const [chatMessages, setChatMessages] = useState([]);
+    const [user, setUser] = useState('');
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        console.log('Opening WebSocket');
+        webSocket.current = new WebSocket('ws://localhost:8080/chat');
+        const openWebSocket = () => {
+            webSocket.current.onopen = (event) => {
+                console.log('Open:', event);
+            }
+            webSocket.current.onclose = (event) => {
+                console.log('Close:', event);
+            }
+        }
+        openWebSocket();
+        return () => {
+            console.log('Closing WebSocket');
+            webSocket.current.close();
+        }
+    }, []);
+
+    useEffect(() => {
+        webSocket.current.onmessage = (event) => {
+            const chatMessageDto = JSON.parse(event.data);
+            console.log('Message:', chatMessageDto);
+            setChatMessages([...chatMessages, {
+                user: chatMessageDto.user,
+                message: chatMessageDto.message
+            }]);
+            if(scrollBottomRef.current) {
+                scrollBottomRef.current.scrollIntoView({ behavior: 'smooth'});
+            }
+        }
+    }, [chatMessages]);
+
+    const handleUserChange = (event) => {
+        setUser(event.target.value);
+    }
+
+    const handleMessageChange = (event) => {
+        setMessage(event.target.value);
+    }
+
+    const handleEnterKey = (event) => {
+        if(event.keyCode === ENTER_KEY_CODE){
+            sendMessage();
+        }
+    }
+
+    const sendMessage = () => {
+        if(user && message) {
+            console.log('Send!');
+            webSocket.current.send(
+                JSON.stringify(new ChatMessageDto(user, message))
+            );
+            setMessage('');
+        }
+    };
+
+    const listChatMessages = chatMessages.map((chatMessageDto, index) => 
+        <ListItem key={index}>
+            <ListItemText primary={`${chatMessageDto.user}: ${chatMessageDto.message}`}/>
+        </ListItem>
+    );
+
     // Initialization
     function Socket() {
         const socket = useContext(SocketContext);
@@ -149,7 +231,51 @@ export default function RoomPage() {
             </Box>
                 <div class="float-container">
                     <div class="float-collab" id="container" ref = {wrapperRef}></div>
-                    <div class="float-chat"> Chat Box </div>
+                    <div class="float-chat">
+                    <Fragment>
+                        <Container>
+                            <Paper elevation={5}>
+                                <Box p={3}>
+                                    <Typography variant="h6" gutterBottom>
+                                        Chat Window
+                                    </Typography>
+                                    <Divider />
+                                    <Grid container spacing={1} alignItems="center">
+                                        <Grid id="chat-window" xs={12} item>
+                                            <List id="chat-window-messages">
+                                                {listChatMessages}
+                                                <ListItem ref={scrollBottomRef}></ListItem>
+                                            </List>
+                                        </Grid>
+                                        <Grid xs={2} item>
+                                            <FormControl fullWidth>
+                                                <TextField onChange={handleUserChange}
+                                                    value={user}
+                                                    label="Nickname"
+                                                    variant="outlined" />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid xs={9} item>
+                                            <FormControl fullWidth>
+                                                <TextField onChange={handleMessageChange} onKeyDown={handleEnterKey}
+                                                    value={message}
+                                                    label="Type your message..."
+                                                    variant="outlined" />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid xs={1} item>
+                                            <IconButton onClick={sendMessage}
+                                                aria-label="send"
+                                                color="primary">
+                                                <SendIcon />
+                                            </IconButton>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            </Paper>
+                        </Container>
+                    </Fragment>
+                    </div>
                 </div>
             </Box>
     )

@@ -25,6 +25,7 @@ export default function RoomPage() {
         console.log("Left")
         navigate("/difficulty")
     }
+    
     // Warning when refreshing
     useEffect(() => {
         const unloadCallback = (event) => {
@@ -53,7 +54,6 @@ export default function RoomPage() {
         setCollabSocket(collabS);
         collabS.emit("join-room", roomID);
     }
-
     useEffect(() => {
         initialiseCollab();
     }, []);
@@ -127,36 +127,49 @@ export default function RoomPage() {
         }
     }, []);
 
+    function createMarkup(questionBody) {
+        return {__html: questionBody}
+    }
+    function formatHtml(questionBody) {
+        return <div class="content__u3I1 code"
+        dangerouslySetInnerHTML={createMarkup(questionBody)} />;
+    }
+
     return (
         <Box>
-            <Box>
-            <h1>
-                Room ID: {roomID}
-            </h1>
+            <Box 
+                sx={{
+                    height: '25%',
+                    margin: 2,
+                }}>
+                <Button onClick={returnHome}
+                    type="submit"
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    startIcon={<KeyboardReturnIcon />}
+                    >
+                    Return to Difficulty Page
+                </Button>
             </Box>
             <Box
                 sx={{
-                    margin: 8,
+                    margin: 2,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    textAlign: "center",
+                    borderColor: 'primary.main',
+                    borderRadius: '16px'
                 }}>
                 <Typography component="h1" variant="h5">
                     {questionTitle}
                 </Typography>
-                <div class="content__u3I1">
-                    {questionDescription}
+                {formatHtml(questionDescription)}
+            </Box>
+                <div class="float-container">
+                    <div class="float-collab" id="container" ref = {wrapperRef}></div>
+                    <div class="float-chat"> Chat Box </div>
                 </div>
             </Box>
-            <div id="container" ref = {wrapperRef}></div>
-            <Button onClick={returnHome}
-              type="submit"
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              startIcon={<KeyboardReturnIcon />}
-            >
-              Return
-            </Button>
-        </Box>
     )
 }

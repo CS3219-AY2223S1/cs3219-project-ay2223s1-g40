@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import MatchModel from './match-model.js';
 import 'dotenv/config'
 
@@ -10,13 +10,21 @@ export async function createMatch(params) {
   return matchModel.create(params);
 }
 
-export async function getAvailableMatch(difficulty) {
-  const availableMatch = await matchModel.findOne({ where: { difficulty } })
-    .then(result => {
-      return matchModel.destroy({ where: { difficulty }})
-        .then(u => result)
-    })
-    .catch(error => error);
+export async function getAvailableMatch(socketId, difficulty) {
+  console.log(socketId, difficulty);
+  const availableMatch = await matchModel.findOne({
+    where: { 
+      difficulty,
+      hostPlayer: {
+        [Op.not]: socketId,  
+      }
+    }
+  })
+  .then(result => {
+    return matchModel.destroy({ where: { difficulty }})
+      .then(u => result)
+  })
+  .catch(error => error);
   return availableMatch;
 }
 

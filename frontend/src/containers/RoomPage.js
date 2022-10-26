@@ -25,6 +25,18 @@ export default function RoomPage() {
         console.log("Left")
         navigate("/difficulty")
     }
+    // Warning when refreshing
+    useEffect(() => {
+        const unloadCallback = (event) => {
+          event.preventDefault();
+          event.returnValue = "";
+          initialiseCollab();
+          return "";
+        };
+        
+        window.addEventListener("beforeunload", unloadCallback);
+        return () => window.removeEventListener("beforeunload", unloadCallback);
+      }, []);
 
     // Retrieve Info
     const [searchparams] = useSearchParams();
@@ -35,14 +47,15 @@ export default function RoomPage() {
     // Collab Service
     const [collabSocket, setCollabSocket] = useState();
     const [quill, setQuill] = useState();
-    useEffect(() => {
+
+    const initialiseCollab = () => {
         const collabS = io("http://localhost:3001");
         setCollabSocket(collabS);
         collabS.emit("join-room", roomID);
+    }
 
-        return () => {
-            collabS.disconnect();
-        }
+    useEffect(() => {
+        initialiseCollab();
     }, []);
 
     useEffect(() => {
@@ -91,6 +104,15 @@ export default function RoomPage() {
     const [questionTitle, setQuestionTitle] = useState("");
     const [questionDescription, setQuestionDescription] = useState("");
     useEffect(() => {
+        setQuestionTitle(JSON.parse(window.localStorage.getItem('title')));
+        setQuestionDescription(JSON.parse(window.localStorage.getItem('description')));
+      }, []);
+    useEffect(() => {
+        window.localStorage.setItem('title', JSON.stringify(questionTitle));
+        window.localStorage.setItem('description', JSON.stringify(questionDescription));
+    }, [questionTitle, questionDescription])
+
+    useEffect(() => {
         if (socket.id === roomID) {
             socket.emit("request-question", { difficulty, roomID });
         }
@@ -124,26 +146,6 @@ export default function RoomPage() {
                 </Typography>
                 <div class="content__u3I1">
                     {questionDescription}
-                    {/* <p>
-                        Given an array of integers <code>
-                            nums
-                        </code> and an integer <code>
-                            target
-                        </code>
-                        , return <em>
-                        indices of the two numbers such that they add up to <code>
-                            target
-                        </code>
-                        </em>.
-                    </p>
-                    <p>
-                        You may assume that each input would have 
-                        <strong><em> exactly one solution</em></strong>
-                        , and you may not use the <em>same</em> element twice.
-                    </p>
-                    <p>
-                        You can return the answer in any order.
-                    </p> */}
                 </div>
             </Box>
             <div id="container" ref = {wrapperRef}></div>

@@ -12,9 +12,9 @@ export async function ormCreateMatch(hostPlayer, difficulty) {
     }
 }
 
-export async function ormGetAvailableMatch(difficulty) {
+export async function ormGetAvailableMatch(socketId, difficulty) {
     try {
-        const availableMatch = await getAvailableMatch(difficulty);
+        const availableMatch = await getAvailableMatch(socketId, difficulty);
         return availableMatch;
     } catch (err) {
         console.log('ERROR: Could not load available match');

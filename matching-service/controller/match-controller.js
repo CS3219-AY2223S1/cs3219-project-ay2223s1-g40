@@ -1,4 +1,5 @@
 import { ormCreateMatch as _createMatch, ormGetAvailableMatch as _getAvailableMatch, ormDestroyMatch as _destroyMatch} from '../model/match-orm.js'
+import fetch from "cross-fetch";
 
 export const respond = (io) => {
   io.on("connection", (socket) => {
@@ -6,7 +7,7 @@ export const respond = (io) => {
 
     socket.on("request-match", async (difficulty) => {
       console.log("match requested");
-      const availableMatch = await getAvailableMatch(difficulty);
+      const availableMatch = await getAvailableMatch(socket.id, difficulty);
       if (!availableMatch) {
         await createMatch(socket.id, difficulty);
       } else {
@@ -43,8 +44,8 @@ export const respond = (io) => {
   });
 }
 
-const getAvailableMatch = async (difficulty) => {
-  const resp = await _getAvailableMatch(difficulty);
+const getAvailableMatch = async (socketId, difficulty) => {
+  const resp = await _getAvailableMatch(socketId, difficulty);
   return resp;
 }
 

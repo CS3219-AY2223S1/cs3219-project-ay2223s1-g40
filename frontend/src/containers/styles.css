@@ -48,15 +48,22 @@ h1 {
   }
 
   .float-collab {
-      width: 70%;
+      width: 60%;
       height: 70vh;
       float: left;
   }
 
   .float-chat {
-    width: 30%;
-    height: 74vh;
+    width: 40%;
+    height: 70vh;
     float: right;
-    padding: 20px;
-    border: 1px solid red;
+}
+
+#chat-window {
+  height: 25rem;
+}
+
+#chat-window-messages {
+  height: 18rem;
+  overflow: auto;
 }

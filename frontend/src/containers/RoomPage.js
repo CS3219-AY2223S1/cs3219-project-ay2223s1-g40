@@ -12,7 +12,6 @@ import io from 'socket.io-client';
 import "quill/dist/quill.snow.css";
 import Quill from "quill";
 
-
 //Chat serviced to
 export class ChatMessageDto {
     constructor(user, message){
@@ -24,73 +23,49 @@ export class ChatMessageDto {
 export default function RoomPage() {
 
     // Chat Service Stuff
-    const ENTER_KEY_CODE = 13;
-
+    const [chatSocket, setChatSocket] = useState();
     const scrollBottomRef = useRef(null);
-    const webSocket = useRef(null);
     const [chatMessages, setChatMessages] = useState([]);
-    const [user, setUser] = useState('');
     const [message, setMessage] = useState('');
 
+    const initialiseChat = () => {
+        const chatS = io("http://localhost:3003");
+        setChatSocket(chatS);
+        chatS.emit("join-room", roomID);
+    }
     useEffect(() => {
-        console.log('Opening WebSocket');
-        webSocket.current = new WebSocket('ws://localhost:8080/chat');
-        const openWebSocket = () => {
-            webSocket.current.onopen = (event) => {
-                console.log('Open:', event);
-            }
-            webSocket.current.onclose = (event) => {
-                console.log('Close:', event);
-            }
-        }
-        openWebSocket();
-        return () => {
-            console.log('Closing WebSocket');
-            webSocket.current.close();
-        }
+        initialiseChat();
     }, []);
 
     useEffect(() => {
-        webSocket.current.onmessage = (event) => {
-            const chatMessageDto = JSON.parse(event.data);
-            console.log('Message:', chatMessageDto);
-            setChatMessages([...chatMessages, {
-                user: chatMessageDto.user,
-                message: chatMessageDto.message
-            }]);
-            if(scrollBottomRef.current) {
-                scrollBottomRef.current.scrollIntoView({ behavior: 'smooth'});
-            }
+        if (chatSocket == null) {
+            return;
         }
-    }, [chatMessages]);
-
-    const handleUserChange = (event) => {
-        setUser(event.target.value);
-    }
+        console.log("this line?")
+        chatSocket.on('chat-message', message => {
+            console.log("test: ", chatMessages);
+            setChatMessages([...chatMessages, {
+                message: message
+            }]);
+        });
+        return () => {
+            chatSocket.off('chat-message', message);
+        }
+    }, [chatSocket]);
 
     const handleMessageChange = (event) => {
         setMessage(event.target.value);
     }
-
-    const handleEnterKey = (event) => {
-        if(event.keyCode === ENTER_KEY_CODE){
-            sendMessage();
-        }
-    }
-
     const sendMessage = () => {
-        if(user && message) {
+        if (message) {
             console.log('Send!');
-            webSocket.current.send(
-                JSON.stringify(new ChatMessageDto(user, message))
-            );
+            socket.emit('send-chat-message', { message, roomID });
             setMessage('');
         }
     };
-
     const listChatMessages = chatMessages.map((chatMessageDto, index) => 
         <ListItem key={index}>
-            <ListItemText primary={`${chatMessageDto.user}: ${chatMessageDto.message}`}/>
+            <ListItemText primary={`${chatMessageDto.message}`}/>
         </ListItem>
     );
 
@@ -234,10 +209,10 @@ export default function RoomPage() {
                     <div class="float-chat">
                     <Fragment>
                         <Container>
-                            <Paper elevation={5}>
-                                <Box p={3}>
+                            <Paper>
+                                <Box p={1}>
                                     <Typography variant="h6" gutterBottom>
-                                        Chat Window
+                                        Chat with your peer!
                                     </Typography>
                                     <Divider />
                                     <Grid container spacing={1} alignItems="center">
@@ -247,17 +222,9 @@ export default function RoomPage() {
                                                 <ListItem ref={scrollBottomRef}></ListItem>
                                             </List>
                                         </Grid>
-                                        <Grid xs={2} item>
-                                            <FormControl fullWidth>
-                                                <TextField onChange={handleUserChange}
-                                                    value={user}
-                                                    label="Nickname"
-                                                    variant="outlined" />
-                                            </FormControl>
-                                        </Grid>
                                         <Grid xs={9} item>
                                             <FormControl fullWidth>
-                                                <TextField onChange={handleMessageChange} onKeyDown={handleEnterKey}
+                                                <TextField onChange={handleMessageChange}
                                                     value={message}
                                                     label="Type your message..."
                                                     variant="outlined" />

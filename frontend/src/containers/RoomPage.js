@@ -1,7 +1,13 @@
 import React, { useContext, useEffect, useRef, useState, useLayoutEffect } from "react";
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../contexts/CreateContext";
 import Typography from "@mui/material/Typography";
@@ -17,15 +23,8 @@ export default function RoomPage() {
         return socket;
     }
     const socket = Socket();
-
     const navigate = useNavigate();
-    const returnHome = event => {
-        event.preventDefault()
-        socket.emit("leave-room");
-        console.log("Left")
-        navigate("/difficulty")
-    }
-    
+
     // Warning when refreshing
     useEffect(() => {
         const unloadCallback = (event) => {
@@ -117,7 +116,6 @@ export default function RoomPage() {
             socket.emit("request-question", { difficulty, roomID });
         }
         socket.on("distribute-question", (question) => {
-            console.log(question);
             setQuestionTitle(question.existingQuestion.title);
             setQuestionDescription(question.existingQuestion.body);
         })
@@ -135,22 +133,72 @@ export default function RoomPage() {
         dangerouslySetInnerHTML={createMarkup(questionBody)} />;
     }
 
+    // Submit
+    const [dialogueOpen, setDialogueOpen] = useState(false);
+    const [toastOpen, setToastOpen] = useState(false);
+
+    const requestSubmit = () => {
+        setDialogueOpen(true);
+    }
+    const handleClose = () => {
+        setDialogueOpen(false);
+    }
+    const handleSubmit = () => {
+        socket.emit("leave-room", roomID);
+        console.log("Left");
+        navigate("/difficulty");
+    }
+    const handleCloseToast = () => {
+        setToastOpen(false);
+    }
+    useEffect(() => {
+        socket.on("notify-leave-room", () => {
+            setToastOpen(true);
+        })
+        return () => {
+            socket.off("notify-leave-room");
+        }
+    }, []);
+
     return (
         <Box>
             <Box 
+                class="submit-button"
                 sx={{
                     height: '25%',
                     margin: 2,
                 }}>
-                <Button onClick={returnHome}
+                <Button onClick={requestSubmit}
                     type="submit"
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
-                    startIcon={<KeyboardReturnIcon />}
                     >
-                    Return to Difficulty Page
+                    Submit
                 </Button>
             </Box>
+
+            <Dialog
+                open={dialogueOpen}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Do you want to submit the session?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Have you and your peer agreed to submit the session? 
+                        We advise you to talk to your peer before submitting the session.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Don't submit yet</Button>
+                    <Button onClick={handleSubmit} autoFocus>
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             <Box
                 sx={{
                     margin: 2,
@@ -161,15 +209,26 @@ export default function RoomPage() {
                     borderColor: 'primary.main',
                     borderRadius: '16px'
                 }}>
-                <Typography component="h1" variant="h5">
+                <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
                     {questionTitle}
                 </Typography>
                 {formatHtml(questionDescription)}
             </Box>
-                <div class="float-container">
-                    <div class="float-collab" id="container" ref = {wrapperRef}></div>
-                    <div class="float-chat"> Chat Box </div>
-                </div>
-            </Box>
+
+            <div class="float-container">
+                <div class="float-collab" id="container" ref = {wrapperRef}></div>
+                <div class="float-chat"> Chat Box </div>
+            </div>
+
+            <Snackbar 
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                open={toastOpen} 
+                autoHideDuration={5000} 
+                onClose={handleCloseToast}>
+                <Alert severity="info" sx={{ fontSize: 16, width: '100%' }}>
+                    Your peer has submitted the session and left the room.
+                </Alert>
+            </Snackbar>
+        </Box>
     )
 }

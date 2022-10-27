@@ -27,6 +27,7 @@ export const respond = (io) => {
     })
     
     socket.on("leave-room", (roomId) => {
+      socket.to(roomId).emit("notify-leave-room");
       socket.leave(roomId);
       socket.disconnect();
     })
@@ -36,6 +37,7 @@ export const respond = (io) => {
       await destroyMatch(socket.id);
     })
 
+    // nsp => including myself
     socket.on("request-question", async ({ difficulty, roomID }) => {
       const response = await fetch('http://localhost:3002/questions/difficulty/' + difficulty)
       const question = await response.json();

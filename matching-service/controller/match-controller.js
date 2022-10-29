@@ -27,7 +27,6 @@ export const respond = (io) => {
     })
     
     socket.on("leave-room", (roomId) => {
-      socket.to(roomId).emit("notify-leave-room");
       socket.leave(roomId);
       socket.disconnect();
     })

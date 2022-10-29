@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState, useLayoutEffect } from "react";
+import React, { useContext, useEffect, useRef, useState, useLayoutEffect, Fragment} from "react";
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
@@ -12,17 +12,25 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../contexts/CreateContext";
 import Typography from "@mui/material/Typography";
 
+import { Container, FormControl, getInputAdornmentUtilityClass, Grid, IconButton, List, ListItem, ListItemText, Paper, TextField } from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
+
 import io from 'socket.io-client';
 import "quill/dist/quill.snow.css";
 import Quill from "quill";
 
-export default function RoomPage() {
-    // Initialization
-    function Socket() {
-        const socket = useContext(SocketContext);
-        return socket;
+// Chat Message Encapsulation
+export class ChatMessageDto {
+    constructor(user, message){
+        this.user = user;
+        this.message = message;
     }
-    const socket = Socket();
+}
+
+export default function RoomPage() {
+    // Initialisation
+    const socketRef = useRef(useContext(SocketContext));
+    const socket = socketRef.current;
     const navigate = useNavigate();
 
     // Warning when refreshing
@@ -31,6 +39,7 @@ export default function RoomPage() {
           event.preventDefault();
           event.returnValue = "";
           initialiseCollab();
+          initialiseChat();
           return "";
         };
         
@@ -42,7 +51,6 @@ export default function RoomPage() {
     const [searchparams] = useSearchParams();
     const roomID = searchparams.get("roomID");
     const difficulty = searchparams.get("difficulty");
-    console.log("Received as: " + roomID);
 
     // Collab Service
     const [collabSocket, setCollabSocket] = useState();
@@ -99,17 +107,67 @@ export default function RoomPage() {
         };
     }, []);
 
+    // Chat Service
+    const [chatSocket, setChatSocket] = useState();
+    const scrollBottomRef = useRef(null);
+    const welcomeMessage = { user: "Admin", message: "You and your peer have joined the room!"};
+    const [chatMessages, setChatMessages] = useState([welcomeMessage]);
+    const [message, setMessage] = useState('');
+    
+    const initialiseChat = () => {
+        const chatS = io("http://localhost:3003");
+        setChatSocket(chatS);
+        chatS.emit("join-room", roomID);
+    }
+    useEffect(() => {
+        initialiseChat();
+    }, []);
+
+    useEffect(() => {
+        if (!chatSocket) {
+            return;
+        }
+        chatSocket.on('chat-message', message => {
+            const chatMessageDto = JSON.parse(message);
+            setChatMessages([...chatMessages, {
+                user: chatMessageDto.user,                
+                message: chatMessageDto.message
+            }]);
+        });
+        return () => {
+            chatSocket.off('chat-message', message);
+        }
+    }, [chatSocket, chatMessages]);
+    
+    const handleMessageChange = (event) => {
+        setMessage(event.target.value);
+    }
+    const sendMessage = () => {
+        if (message) {
+            setChatMessages([...chatMessages, {
+                user: "You",
+                message: message
+            }]);
+            chatSocket.emit('send-chat-message', 
+                { message: JSON.stringify(new ChatMessageDto("Peer", message)), roomID});
+            setMessage('');
+        }
+    }
+    const handleEnterKey = (event) => {
+        const ENTER_KEY_CODE = 13
+        if(event.keyCode === ENTER_KEY_CODE){
+            sendMessage();
+        }
+    }
+    const listChatMessages = chatMessages.map((chatMessageDto, index) => 
+        <ListItem key={index}>
+            <ListItemText primary={`${chatMessageDto.user}: ${chatMessageDto.message}`}/>
+        </ListItem>
+    );
+
     // Matching Service --> Question Service
     const [questionTitle, setQuestionTitle] = useState("");
     const [questionDescription, setQuestionDescription] = useState("");
-    useEffect(() => {
-        setQuestionTitle(JSON.parse(window.localStorage.getItem('title')));
-        setQuestionDescription(JSON.parse(window.localStorage.getItem('description')));
-      }, []);
-    useEffect(() => {
-        window.localStorage.setItem('title', JSON.stringify(questionTitle));
-        window.localStorage.setItem('description', JSON.stringify(questionDescription));
-    }, [questionTitle, questionDescription])
 
     useEffect(() => {
         if (socket.id === roomID) {
@@ -124,7 +182,17 @@ export default function RoomPage() {
             socket.off("distribute-question");
         }
     }, []);
+    useEffect(() => {
+        setQuestionTitle(JSON.parse(window.localStorage.getItem('title')));
+        setQuestionDescription(JSON.parse(window.localStorage.getItem('description')));
+      }, []);
 
+    useEffect(() => {
+        window.localStorage.setItem('title', JSON.stringify(questionTitle));
+        window.localStorage.setItem('description', JSON.stringify(questionDescription));
+    }, [questionTitle, questionDescription])
+
+    // Question Display
     function createMarkup(questionBody) {
         return {__html: questionBody}
     }
@@ -133,7 +201,7 @@ export default function RoomPage() {
         dangerouslySetInnerHTML={createMarkup(questionBody)} />;
     }
 
-    // Submit
+    // Submit Button
     const [dialogueOpen, setDialogueOpen] = useState(false);
     const [toastOpen, setToastOpen] = useState(false);
 
@@ -144,6 +212,7 @@ export default function RoomPage() {
         setDialogueOpen(false);
     }
     const handleSubmit = () => {
+        chatSocket.emit("notify-leave-room", roomID);
         socket.emit("leave-room", roomID);
         console.log("Left");
         navigate("/difficulty");
@@ -151,14 +220,18 @@ export default function RoomPage() {
     const handleCloseToast = () => {
         setToastOpen(false);
     }
+
     useEffect(() => {
-        socket.on("notify-leave-room", () => {
+        if (!chatSocket) {
+            return;
+        }
+        chatSocket.on("notify-leave-room", () => {
             setToastOpen(true);
         })
         return () => {
-            socket.off("notify-leave-room");
+            chatSocket.off("notify-leave-room");
         }
-    }, []);
+    }, [chatSocket]);
 
     return (
         <Box>
@@ -216,8 +289,40 @@ export default function RoomPage() {
             </Box>
 
             <div class="float-container">
-                <div class="float-collab" id="container" ref = {wrapperRef}></div>
-                <div class="float-chat"> Chat Box </div>
+                <div class="float-collab" id="container" ref={wrapperRef}></div>
+                <div class="float-chat">
+                <Fragment>
+                    <Container>
+                        <Paper>
+                            <Box p={1}>
+                                <Grid container spacing={1} alignItems="center">
+                                    <Grid id="chat-window" xs={12} item>
+                                        <List id="chat-window-messages">
+                                            {listChatMessages}
+                                            <ListItem ref={scrollBottomRef}></ListItem>
+                                        </List>
+                                    </Grid>
+                                    <Grid xs={9} item>
+                                        <FormControl fullWidth>
+                                            <TextField onChange={handleMessageChange} onKeyDown={handleEnterKey}
+                                                value={message}
+                                                label="Type your message..."
+                                                variant="outlined" />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid xs={1} item>
+                                        <IconButton onClick={sendMessage}
+                                            aria-label="send"
+                                            color="primary">
+                                            <SendIcon />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        </Paper>
+                    </Container>
+                </Fragment>
+                </div>
             </div>
 
             <Snackbar 

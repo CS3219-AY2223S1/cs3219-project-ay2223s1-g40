@@ -244,7 +244,7 @@ export default function RoomPage() {
                 <Button onClick={requestSubmit}
                     type="submit"
                     variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
+                    sx={{ mt: 3, mb: 2, position: "fixed", top: 0, right: 15, Index: 2000 }}
                     >
                     Submit
                 </Button>

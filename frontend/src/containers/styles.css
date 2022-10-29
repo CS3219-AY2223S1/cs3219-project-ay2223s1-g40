@@ -4,7 +4,7 @@ h1 {
   margin-bottom: 40px;
   position: relative;
 }
-  
+
 .timer-wrapper {
   display: flex;
   justify-content: center;
@@ -59,4 +59,13 @@ h1 {
   float: right;
   padding: 20px;
   border: 1px solid red;
+}
+
+#chat-window {
+  height: 25rem;
+}
+
+#chat-window-messages {
+  height: 18rem;
+  overflow: auto;
 }

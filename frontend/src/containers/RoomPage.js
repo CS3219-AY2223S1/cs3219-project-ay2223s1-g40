@@ -29,11 +29,8 @@ export class ChatMessageDto {
 
 export default function RoomPage() {
     // Initialisation
-    function Socket() {
-        const socket = useContext(SocketContext);
-        return socket;
-    }
-    const socket = Socket();
+    const socketRef = useRef(useContext(SocketContext));
+    const socket = socketRef.current;
     const navigate = useNavigate();
 
     // Warning when refreshing
@@ -215,6 +212,7 @@ export default function RoomPage() {
         setDialogueOpen(false);
     }
     const handleSubmit = () => {
+        chatSocket.emit("notify-leave-room", roomID);
         socket.emit("leave-room", roomID);
         console.log("Left");
         navigate("/difficulty");
@@ -224,13 +222,16 @@ export default function RoomPage() {
     }
 
     useEffect(() => {
-        socket.on("notify-leave-room", () => {
+        if (!chatSocket) {
+            return;
+        }
+        chatSocket.on("notify-leave-room", () => {
             setToastOpen(true);
         })
         return () => {
-            socket.off("notify-leave-room");
+            chatSocket.off("notify-leave-room");
         }
-    }, []);
+    }, [chatSocket]);
 
     return (
         <Box>

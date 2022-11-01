@@ -1,0 +1,149 @@
+on:
+  push:
+    branches:
+      - release
+  # run manually
+  workflow_dispatch:
+
+name: Deploy to Amazon ECS
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: peerprep
+        IMAGE_TAG: ${{ github.sha }}
+
+      run: |
+        echo "Build user-service docker container"
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG -f ./user-service/Dockerfile .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG
+        echo "::set-output name=user-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG"
+
+      run: |
+        echo "Build matching-service docker container"
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/matching-service:$IMAGE_TAG -f ./matching-service/Dockerfile .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY/matching-service:$IMAGE_TAG
+        echo "::set-output name=matching-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/matching-service:$IMAGE_TAG"
+
+      run: |
+        echo "Build question-service docker container"
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/question-service:$IMAGE_TAG -f ./question-service/Dockerfile .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY/question-service:$IMAGE_TAG
+        echo "::set-output name=question-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/question-service:$IMAGE_TAG"
+  
+      run: |
+        echo "Build collab-service docker container"
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/collab-service:$IMAGE_TAG -f ./collab-service/Dockerfile .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY/collab-service:$IMAGE_TAG
+        echo "::set-output name=collab-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/collab-service:$IMAGE_TAG"
+
+      run: |
+        echo "Build chat-service docker container"
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/chat-service:$IMAGE_TAG -f ./chat-service/Dockerfile .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY/chat-service:$IMAGE_TAG
+        echo "::set-output name=chat-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/chat-service:$IMAGE_TAG"
+
+    - name: Fill in the new image ID in the Amazon ECS user-service task definition
+      id: task-def-user-service
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: devops/user-service-task-definition.json
+        container-name: user-service-container
+        image: ${{ steps.build-image.outputs.user-service-image }}
+
+    - name: Fill in the new image ID in the Amazon ECS matching-service task definition
+      id: task-def-matching-service
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: devops/matching-service-task-definition.json
+        container-name: matching-service-container
+        image: ${{ steps.build-image.outputs.matching-service-image }}
+
+    - name: Fill in the new image ID in the Amazon ECS question-service task definition
+      id: task-def-question-service
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: devops/question-service-task-definition.json
+        container-name: question-service-container
+        image: ${{ steps.build-image.outputs.question-service-image }}
+
+    - name: Fill in the new image ID in the Amazon ECS collab-service task definition
+      id: task-def-collab-service
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: devops/collab-service-task-definition.json
+        container-name: collab-service-container
+        image: ${{ steps.build-image.outputs.collab-service-image }}
+
+    - name: Fill in the new image ID in the Amazon ECS chat-service task definition
+      id: task-def-chat-service
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: devops/chat-service-task-definition.json
+        container-name: chat-service-container
+        image: ${{ steps.build-image.outputs.chat-service-image }}
+
+    - name: Deploy Amazon ECS user-service task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def-user-service.outputs.task-definition }}
+        service: user-service
+        cluster: PeerPrep
+        wait-for-service-stability: true
+
+    - name: Deploy Amazon ECS matching-service task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def-matching-service.outputs.task-definition }}
+        service: matching-service
+        cluster: PeerPrep
+        wait-for-service-stability: true
+
+    - name: Deploy Amazon ECS question-service task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def-question-service.outputs.task-definition }}
+        service: question-service
+        cluster: PeerPrep
+        wait-for-service-stability: true
+
+    - name: Deploy Amazon ECS collab-service task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def-collab-service.outputs.task-definition }}
+        service: collab-service
+        cluster: PeerPrep
+        wait-for-service-stability: true
+
+    - name: Deploy Amazon ECS chat-service task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def-chat-service.outputs.task-definition }}
+        service: chat-service
+        cluster: PeerPrep
+        wait-for-service-stability: true

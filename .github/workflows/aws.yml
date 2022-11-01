@@ -7,6 +7,9 @@ on:
 
 name: Deploy to Amazon ECS
 
+env:
+  CLUSTER_NAME: PeerPrep-ECSCluster-WWLRYmUviCfZ
+
 jobs:
   deploy:
     name: Deploy
@@ -108,7 +111,7 @@ jobs:
       with:
         task-definition: ${{ steps.task-def-user-service.outputs.task-definition }}
         service: user-service
-        cluster: PeerPrep
+        cluster: ${{ env.CLUSTER_NAME }}
         wait-for-service-stability: true
 
     - name: Deploy Amazon ECS matching-service task definition
@@ -116,7 +119,7 @@ jobs:
       with:
         task-definition: ${{ steps.task-def-matching-service.outputs.task-definition }}
         service: matching-service
-        cluster: PeerPrep
+        cluster: ${{ env.CLUSTER_NAME }}
         wait-for-service-stability: true
 
     - name: Deploy Amazon ECS question-service task definition
@@ -124,7 +127,7 @@ jobs:
       with:
         task-definition: ${{ steps.task-def-question-service.outputs.task-definition }}
         service: question-service
-        cluster: PeerPrep
+        cluster: ${{ env.CLUSTER_NAME }}
         wait-for-service-stability: true
 
     - name: Deploy Amazon ECS collab-service task definition
@@ -132,7 +135,7 @@ jobs:
       with:
         task-definition: ${{ steps.task-def-collab-service.outputs.task-definition }}
         service: collab-service
-        cluster: PeerPrep
+        cluster: ${{ env.CLUSTER_NAME }}
         wait-for-service-stability: true
 
     - name: Deploy Amazon ECS chat-service task definition
@@ -140,5 +143,5 @@ jobs:
       with:
         task-definition: ${{ steps.task-def-chat-service.outputs.task-definition }}
         service: chat-service
-        cluster: PeerPrep
+        cluster: ${{ env.CLUSTER_NAME }}
         wait-for-service-stability: true

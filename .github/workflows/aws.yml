@@ -112,7 +112,7 @@ jobs:
         task-definition: ${{ steps.task-def-user-service.outputs.task-definition }}
         service: user-service
         cluster: ${{ env.CLUSTER_NAME }}
-        wait-for-service-stability: true
+        wait-for-service-stability: false
 
     - name: Deploy Amazon ECS matching-service task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -120,7 +120,7 @@ jobs:
         task-definition: ${{ steps.task-def-matching-service.outputs.task-definition }}
         service: matching-service
         cluster: ${{ env.CLUSTER_NAME }}
-        wait-for-service-stability: true
+        wait-for-service-stability: false
 
     - name: Deploy Amazon ECS question-service task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -128,7 +128,7 @@ jobs:
         task-definition: ${{ steps.task-def-question-service.outputs.task-definition }}
         service: question-service
         cluster: ${{ env.CLUSTER_NAME }}
-        wait-for-service-stability: true
+        wait-for-service-stability: false
 
     - name: Deploy Amazon ECS collab-service task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -136,7 +136,7 @@ jobs:
         task-definition: ${{ steps.task-def-collab-service.outputs.task-definition }}
         service: collab-service
         cluster: ${{ env.CLUSTER_NAME }}
-        wait-for-service-stability: true
+        wait-for-service-stability: false
 
     - name: Deploy Amazon ECS chat-service task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -144,4 +144,4 @@ jobs:
         task-definition: ${{ steps.task-def-chat-service.outputs.task-definition }}
         service: chat-service
         cluster: ${{ env.CLUSTER_NAME }}
-        wait-for-service-stability: true
+        wait-for-service-stability: false

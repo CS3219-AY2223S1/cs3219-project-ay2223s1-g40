@@ -32,7 +32,6 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: peerprep
         IMAGE_TAG: ${{ github.sha }}
 
       run: |
@@ -40,29 +39,29 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG -f ./user-service/Dockerfile .
+        docker build -t $ECR_REGISTRY/user-service:$IMAGE_TAG -f ./user-service/Dockerfile .
         docker push $ECR_REGISTRY/user-service:$IMAGE_TAG
-        echo "::set-output name=user-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG"
+        echo "::set-output name=user-service-image::$ECR_REGISTRY/user-service:$IMAGE_TAG"
 
         echo "Build matching-service docker container"
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/matching-service:$IMAGE_TAG -f ./matching-service/Dockerfile .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY/matching-service:$IMAGE_TAG
-        echo "::set-output name=matching-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/matching-service:$IMAGE_TAG"
+        docker build -t $ECR_REGISTRY/matching-service:$IMAGE_TAG -f ./matching-service/Dockerfile .
+        docker push $ECR_REGISTRY/matching-service:$IMAGE_TAG
+        echo "::set-output name=matching-service-image::$ECR_REGISTRY/matching-service:$IMAGE_TAG"
 
         echo "Build question-service docker container"
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/question-service:$IMAGE_TAG -f ./question-service/Dockerfile .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY/question-service:$IMAGE_TAG
-        echo "::set-output name=question-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/question-service:$IMAGE_TAG"
+        docker build -t $ECR_REGISTRY/question-service:$IMAGE_TAG -f ./question-service/Dockerfile .
+        docker push $ECR_REGISTRY/question-service:$IMAGE_TAG
+        echo "::set-output name=question-service-image::$ECR_REGISTRY/question-service:$IMAGE_TAG"
 
         echo "Build collab-service docker container"
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/collab-service:$IMAGE_TAG -f ./collab-service/Dockerfile .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY/collab-service:$IMAGE_TAG
-        echo "::set-output name=collab-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/collab-service:$IMAGE_TAG"
+        docker build -t $ECR_REGISTRY/collab-service:$IMAGE_TAG -f ./collab-service/Dockerfile .
+        docker push $ECR_REGISTRY/collab-service:$IMAGE_TAG
+        echo "::set-output name=collab-service-image::$ECR_REGISTRY/collab-service:$IMAGE_TAG"
 
         echo "Build chat-service docker container"
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/chat-service:$IMAGE_TAG -f ./chat-service/Dockerfile .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY/chat-service:$IMAGE_TAG
-        echo "::set-output name=chat-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/chat-service:$IMAGE_TAG"
+        docker build -t $ECR_REGISTRY/chat-service:$IMAGE_TAG -f ./chat-service/Dockerfile .
+        docker push $ECR_REGISTRY/chat-service:$IMAGE_TAG
+        echo "::set-output name=chat-service-image::$ECR_REGISTRY/chat-service:$IMAGE_TAG"
 
     - name: Fill in the new image ID in the Amazon ECS user-service task definition
       id: task-def-user-service

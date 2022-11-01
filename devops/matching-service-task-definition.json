@@ -29,7 +29,7 @@
       "memoryReservation": 1024,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "557655061760.dkr.ecr.ap-southeast-1.amazonaws.com/peerprep/matching-service:latest",
+      "image": "557655061760.dkr.ecr.ap-southeast-1.amazonaws.com/matching-service:latest",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,

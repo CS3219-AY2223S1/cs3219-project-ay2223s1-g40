@@ -44,25 +44,21 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG
         echo "::set-output name=user-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG"
 
-      run: |
         echo "Build matching-service docker container"
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/matching-service:$IMAGE_TAG -f ./matching-service/Dockerfile .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY/matching-service:$IMAGE_TAG
         echo "::set-output name=matching-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/matching-service:$IMAGE_TAG"
 
-      run: |
         echo "Build question-service docker container"
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/question-service:$IMAGE_TAG -f ./question-service/Dockerfile .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY/question-service:$IMAGE_TAG
         echo "::set-output name=question-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/question-service:$IMAGE_TAG"
-  
-      run: |
+
         echo "Build collab-service docker container"
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/collab-service:$IMAGE_TAG -f ./collab-service/Dockerfile .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY/collab-service:$IMAGE_TAG
         echo "::set-output name=collab-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/collab-service:$IMAGE_TAG"
 
-      run: |
         echo "Build chat-service docker container"
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/chat-service:$IMAGE_TAG -f ./chat-service/Dockerfile .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY/chat-service:$IMAGE_TAG

@@ -41,7 +41,7 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG -f ./user-service/Dockerfile .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG
+        docker push $ECR_REGISTRY/user-service:$IMAGE_TAG
         echo "::set-output name=user-service-image::$ECR_REGISTRY/$ECR_REPOSITORY/user-service:$IMAGE_TAG"
 
         echo "Build matching-service docker container"

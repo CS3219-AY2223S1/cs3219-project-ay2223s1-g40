@@ -15,7 +15,11 @@ export const URL_USER_SVC_RESETPASSWORD = URL_USER_SVC + PREFIX_RESETPASSWORD;
 export const URL_USER_SVC_LOGOUT = URL_USER_SVC + PREFIX_LOGOUT;
 export const URL_USER_SVC_REFRESH_TOKEN = URL_USER_SVC + PREFIX_REFRESH_TOKEN;
 
-const URI_MATCHING_SVC =
+export const URI_MATCHING_SVC = 
   process.env.REACT_APP_URI_MATCHING_SVC || "http://localhost:8001";
-
-export const URL_MATCHING_SVC = URI_MATCHING_SVC;
+export const URI_COLLAB_SVC = 
+  process.env.REACT_APP_URI_COLLAB_SVC || "http://localhost:3001";
+export const URI_QUESTION_SVC = 
+  process.env.REACT_APP_URI_QUESTION_SVC || "http://localhost:3002";
+export const URI_CHAT_SVC = 
+  process.env.REACT_APP_URI_USER_SVC || "http://localhost:3003";

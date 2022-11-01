@@ -19,6 +19,8 @@ import io from 'socket.io-client';
 import "quill/dist/quill.snow.css";
 import Quill from "quill";
 
+import { URI_COLLAB_SVC, URI_CHAT_SVC } from "../configs";
+
 // Chat Message Encapsulation
 export class ChatMessageDto {
     constructor(user, message){
@@ -57,7 +59,7 @@ export default function RoomPage() {
     const [quill, setQuill] = useState();
 
     const initialiseCollab = () => {
-        const collabS = io("http://localhost:3001");
+        const collabS = io(URI_COLLAB_SVC);
         setCollabSocket(collabS);
         collabS.emit("join-room", roomID);
     }
@@ -115,7 +117,7 @@ export default function RoomPage() {
     const [message, setMessage] = useState('');
     
     const initialiseChat = () => {
-        const chatS = io("http://localhost:3003");
+        const chatS = io(URI_CHAT_SVC);
         setChatSocket(chatS);
         chatS.emit("join-room", roomID);
     }

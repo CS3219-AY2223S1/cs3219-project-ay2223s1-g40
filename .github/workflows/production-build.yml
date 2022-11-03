@@ -98,7 +98,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Generate collab-service deployment package
       working-directory: collab-service
-      run: zip -r collab-service.zip . 
+      run: zip -r collab-service.zip * .ebextensions
     - name: Get timestamp
       uses: gerred/actions/current-time@master
       id: current-time
@@ -127,7 +127,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Generate chat-service deployment package
       working-directory: chat-service
-      run: zip -r chat-service.zip . 
+      run: zip -r chat-service.zip * .ebextensions 
     - name: Get timestamp
       uses: gerred/actions/current-time@master
       id: current-time

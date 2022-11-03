@@ -4,7 +4,7 @@ import "./styles.css";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 
 import CancelIcon from "@mui/icons-material/Cancel";
-import Button from "@mui/material/Button";
+import { Button } from "@chakra-ui/react";
 import Box from "@mui/material/Box";
 
 import { useSearchParams } from "react-router-dom";
@@ -104,7 +104,7 @@ export default function CountdownPage() {
           type="submit"
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
-          startIcon={<CancelIcon />}
+          leftIcon={<CancelIcon />}
         >
           Cancel
         </Button>

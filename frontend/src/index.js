@@ -18,11 +18,11 @@ const theme = extendTheme({ config });
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <SocketProvider value={io("http://localhost:8001")}>
-      <ChakraProvider theme={theme}>
+    <ChakraProvider theme={theme}>
+      <SocketProvider value={io("http://localhost:8001")}>
         <App />
-      </ChakraProvider>
-    </SocketProvider>
+      </SocketProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );
 

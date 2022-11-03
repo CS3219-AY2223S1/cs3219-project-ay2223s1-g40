@@ -1,130 +1,134 @@
-import React, { useContext, useEffect, useRef, useState, useLayoutEffect } from "react";
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useLayoutEffect,
+} from "react";
+import { Button } from "@chakra-ui/react";
+import Box from "@mui/material/Box";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../contexts/CreateContext";
 import Typography from "@mui/material/Typography";
 
-import io from 'socket.io-client';
+import io from "socket.io-client";
 import "quill/dist/quill.snow.css";
 import Quill from "quill";
 
 export default function RoomPage() {
-    // Initialization
-    function Socket() {
-        const socket = useContext(SocketContext);
-        return socket;
+  // Initialization
+  function Socket() {
+    const socket = useContext(SocketContext);
+    return socket;
+  }
+  const socket = Socket();
+
+  const navigate = useNavigate();
+  const returnHome = (event) => {
+    event.preventDefault();
+    socket.emit("leave-room");
+    console.log("Left");
+    navigate("/difficulty");
+  };
+
+  // Retrieve Info
+  const [searchparams] = useSearchParams();
+  const roomID = searchparams.get("roomID");
+  const difficulty = searchparams.get("difficulty");
+  console.log("Received as: " + roomID);
+
+  // Collab Service
+  const [collabSocket, setCollabSocket] = useState();
+  const [quill, setQuill] = useState();
+  useEffect(() => {
+    const collabS = io("http://localhost:3001");
+    setCollabSocket(collabS);
+    collabS.emit("join-room", roomID);
+
+    return () => {
+      collabS.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (collabSocket == null || quill == null) {
+      return;
     }
-    const socket = Socket();
+    const handler = (delta, oldDelta, source) => {
+      if (source !== "user") {
+        return;
+      }
+      collabSocket.emit("send-changes", { delta, roomID });
+    };
+    quill.on("text-change", handler);
 
-    const navigate = useNavigate();
-    const returnHome = event => {
-        event.preventDefault()
-        socket.emit("leave-room");
-        console.log("Left")
-        navigate("/difficulty")
+    return () => {
+      quill.off("text-change", handler);
+    };
+  }, [collabSocket, quill]);
+
+  useEffect(() => {
+    if (collabSocket == null || quill == null) {
+      return;
     }
+    const handler = (delta) => {
+      quill.updateContents(delta);
+    };
+    collabSocket.on("receive-changes", handler);
 
-    // Retrieve Info
-    const [searchparams] = useSearchParams();
-    const roomID = searchparams.get("roomID");
-    const difficulty = searchparams.get("difficulty");
-    console.log("Received as: " + roomID);
+    return () => {
+      collabSocket.off("receive-changes", handler);
+    };
+  }, [collabSocket, quill]);
 
-    // Collab Service
-    const [collabSocket, setCollabSocket] = useState();
-    const [quill, setQuill] = useState();
-    useEffect(() => {
-        const collabS = io("http://localhost:3001");
-        setCollabSocket(collabS);
-        collabS.emit("join-room", roomID);
+  const wrapperRef = useRef();
+  useLayoutEffect(() => {
+    const editor = document.createElement("div");
+    wrapperRef.current.append(editor);
+    const q = new Quill(editor, { theme: "snow" });
+    setQuill(q);
+    return () => {
+      wrapperRef.current.innerHTML = "";
+    };
+  }, []);
 
-        return () => {
-            collabS.disconnect();
-        }
-    }, []);
+  // Matching Service --> Question Service
+  const [questionTitle, setQuestionTitle] = useState("");
+  const [questionDescription, setQuestionDescription] = useState("");
+  useEffect(() => {
+    if (socket.id === roomID) {
+      socket.emit("request-question", { difficulty, roomID });
+    }
+    socket.on("distribute-question", (question) => {
+      console.log(question);
+      setQuestionTitle(question.existingQuestion.title);
+      setQuestionDescription(question.existingQuestion.body);
+    });
 
-    useEffect(() => {
-        if (collabSocket == null || quill == null) {
-            return;
-        }
-        const handler = (delta, oldDelta, source) => {
-            if (source !== "user") {
-                return;
-            }
-            collabSocket.emit("send-changes", { delta, roomID });
-        };
-        quill.on("text-change", handler);
+    return () => {
+      socket.off("distribute-question");
+    };
+  }, []);
 
-        return () => {
-            quill.off("text-change", handler);
-        }
-    }, [collabSocket, quill]);
+  return (
+    <Box>
+      <Box>
+        <h1>Room ID: {roomID}</h1>
+      </Box>
+      <Box
+        sx={{
+          margin: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <h1>{questionTitle}</h1>
 
-    useEffect(() => {
-        if (collabSocket == null || quill == null) {
-            return;
-        }
-        const handler = (delta) => {
-            quill.updateContents(delta);
-        };
-        collabSocket.on("receive-changes", handler);
-
-        return () => {
-            collabSocket.off("receive-changes", handler);
-        }
-    }, [collabSocket, quill]);
-
-    const wrapperRef = useRef();
-    useLayoutEffect(() => {
-        const editor = document.createElement("div");
-        wrapperRef.current.append(editor);
-        const q = new Quill(editor, { theme: "snow"});
-        setQuill(q);
-        return () => {
-            wrapperRef.current.innerHTML = "";
-        };
-    }, []);
-
-    // Matching Service --> Question Service
-    const [questionTitle, setQuestionTitle] = useState("");
-    const [questionDescription, setQuestionDescription] = useState("");
-    useEffect(() => {
-        if (socket.id === roomID) {
-            socket.emit("request-question", { difficulty, roomID });
-        }
-        socket.on("distribute-question", (question) => {
-            console.log(question);
-            setQuestionTitle(question.existingQuestion.title);
-            setQuestionDescription(question.existingQuestion.body);
-        })
-
-        return () => {
-            socket.off("distribute-question");
-        }
-    }, []);
-
-    return (
-        <Box>
-            <Box>
-            <h1>
-                Room ID: {roomID}
-            </h1>
-            </Box>
-            <Box
-                sx={{
-                    margin: 8,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}>
-                <Typography component="h1" variant="h5">
-                    {questionTitle}
-                </Typography>
-                <div class="content__u3I1">
-                    {questionDescription}
-                    {/* <p>
+        <div className="content__u3I1">
+          {questionDescription}
+          {/* <p>
                         Given an array of integers <code>
                             nums
                         </code> and an integer <code>
@@ -144,17 +148,18 @@ export default function RoomPage() {
                     <p>
                         You can return the answer in any order.
                     </p> */}
-                </div>
-            </Box>
-            <div id="container" ref = {wrapperRef}></div>
-            <Button onClick={returnHome}
-              type="submit"
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              startIcon={<KeyboardReturnIcon />}
-            >
-              Return
-            </Button>
-        </Box>
-    )
+        </div>
+      </Box>
+      <div id="container" ref={wrapperRef}></div>
+      <Button
+        onClick={returnHome}
+        type="submit"
+        variant="contained"
+        sx={{ mt: 3, mb: 2 }}
+        leftIcon={<KeyboardReturnIcon />}
+      >
+        Return
+      </Button>
+    </Box>
+  );
 }

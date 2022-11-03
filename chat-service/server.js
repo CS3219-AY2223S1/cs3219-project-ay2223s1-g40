@@ -34,4 +34,4 @@ io.on("connection", socket => {
   })
 })
 
-httpServer.listen(process.env.PORT);
+httpServer.listen(process.env.PORT || 3003);

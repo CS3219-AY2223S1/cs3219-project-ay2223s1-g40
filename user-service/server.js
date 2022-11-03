@@ -42,4 +42,4 @@ router.put("/resetpassword", resetPassword);
 
 app.use("/api/user", router);
 
-app.listen(process.env.PORT, () => console.log("user-service listening on port 8000"));
+app.listen(process.env.PORT || 8000, () => console.log("user-service listening on port 8000"));

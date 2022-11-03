@@ -25,4 +25,4 @@ const io = new Server(httpServer, {
 // handling over the io logic to the controller
 respond(io);
 
-httpServer.listen(process.env.PORT);
+httpServer.listen(process.env.PORT || 8001);

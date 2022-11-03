@@ -69,7 +69,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Generate question-service deployment package
       working-directory: question-service
-      run: zip -r question-service.zip . 
+      run: zip -r "question-service.zip" * node_modules
     - name: Get timestamp
       uses: gerred/actions/current-time@master
       id: current-time

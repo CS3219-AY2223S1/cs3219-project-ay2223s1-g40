@@ -26,8 +26,8 @@ jobs:
     - name: Deploy user-service
       uses: einaregilsson/beanstalk-deploy@v10
       with:
-        aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
-        aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+        aws_access_key: ${{secrets.AWS_ACCESS_KEY_ID}}
+        aws_secret_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
         application_name: "user-service"
         environment_name: "user-service-env"
         region: "ap-southeast-1"
@@ -55,8 +55,8 @@ jobs:
     - name: Deploy matching-service
       uses: einaregilsson/beanstalk-deploy@v10
       with:
-        aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
-        aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+        aws_access_key: ${{secrets.AWS_ACCESS_KEY_ID}}
+        aws_secret_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
         application_name: "matching-service"
         environment_name: "matching-service-env"
         region: "ap-southeast-1"
@@ -84,8 +84,8 @@ jobs:
     - name: Deploy question-service
       uses: einaregilsson/beanstalk-deploy@v10
       with:
-        aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
-        aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+        aws_access_key: ${{secrets.AWS_ACCESS_KEY_ID}}
+        aws_secret_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
         application_name: "question-service"
         environment_name: "question-service-env"
         region: "ap-southeast-1"
@@ -113,8 +113,8 @@ jobs:
     - name: Deploy collab-service
       uses: einaregilsson/beanstalk-deploy@v10
       with:
-        aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
-        aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+        aws_access_key: ${{secrets.AWS_ACCESS_KEY_ID}}
+        aws_secret_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
         application_name: "collab-service"
         environment_name: "collab-service-env"
         region: "ap-southeast-1"
@@ -142,8 +142,8 @@ jobs:
     - name: Deploy chat-service
       uses: einaregilsson/beanstalk-deploy@v10
       with:
-        aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
-        aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+        aws_access_key: ${{secrets.AWS_ACCESS_KEY_ID}}
+        aws_secret_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
         application_name: "chat-service"
         environment_name: "chat-service-env"
         region: "ap-southeast-1"

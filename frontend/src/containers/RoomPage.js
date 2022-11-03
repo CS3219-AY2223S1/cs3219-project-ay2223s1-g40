@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState, useLayoutEffect, Fragment} from "react";
-import Button from '@mui/material/Button';
+import { Button } from "@chakra-ui/react";
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -67,47 +67,48 @@ export default function RoomPage() {
         initialiseCollab();
     }, []);
 
-    useEffect(() => {
-        if (collabSocket == null || quill == null) {
-            return;
-        }
-        const handler = (delta, oldDelta, source) => {
-            if (source !== "user") {
-                return;
-            }
-            collabSocket.emit("send-changes", { delta, roomID });
-        };
-        quill.on("text-change", handler);
+    return () => {
+      quill.off("text-change", handler);
+    };
+  }, [collabSocket, quill]);
 
-        return () => {
-            quill.off("text-change", handler);
-        }
-    }, [collabSocket, quill]);
+  useEffect(() => {
+    if (collabSocket == null || quill == null) {
+      return;
+    }
+    const handler = (delta) => {
+      quill.updateContents(delta);
+    };
+    collabSocket.on("receive-changes", handler);
 
-    useEffect(() => {
-        if (collabSocket == null || quill == null) {
-            return;
-        }
-        const handler = (delta) => {
-            quill.updateContents(delta);
-        };
-        collabSocket.on("receive-changes", handler);
+    return () => {
+      collabSocket.off("receive-changes", handler);
+    };
+  }, [collabSocket, quill]);
 
-        return () => {
-            collabSocket.off("receive-changes", handler);
-        }
-    }, [collabSocket, quill]);
+  const wrapperRef = useRef();
+  useLayoutEffect(() => {
+    const editor = document.createElement("div");
+    wrapperRef.current.append(editor);
+    const q = new Quill(editor, { theme: "snow" });
+    setQuill(q);
+    return () => {
+      wrapperRef.current.innerHTML = "";
+    };
+  }, []);
 
-    const wrapperRef = useRef();
-    useLayoutEffect(() => {
-        const editor = document.createElement("div");
-        wrapperRef.current.append(editor);
-        const q = new Quill(editor, { theme: "snow"});
-        setQuill(q);
-        return () => {
-            wrapperRef.current.innerHTML = "";
-        };
-    }, []);
+  // Matching Service --> Question Service
+  const [questionTitle, setQuestionTitle] = useState("");
+  const [questionDescription, setQuestionDescription] = useState("");
+  useEffect(() => {
+    if (socket.id === roomID) {
+      socket.emit("request-question", { difficulty, roomID });
+    }
+    socket.on("distribute-question", (question) => {
+      console.log(question);
+      setQuestionTitle(question.existingQuestion.title);
+      setQuestionDescription(question.existingQuestion.body);
+    });
 
     // Chat Service
     const [chatSocket, setChatSocket] = useState();
@@ -284,9 +285,10 @@ export default function RoomPage() {
                     borderColor: 'primary.main',
                     borderRadius: '16px'
                 }}>
-                <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
+                    <h1> {questionTitle}</h1>
+                {/* <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
                     {questionTitle}
-                </Typography>
+                </Typography> */}
                 {formatHtml(questionDescription)}
             </Box>
 

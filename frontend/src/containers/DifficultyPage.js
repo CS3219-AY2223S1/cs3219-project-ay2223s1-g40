@@ -17,12 +17,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
-import Stack from "@mui/material/Stack";
-import HistoryIcon from "@mui/icons-material/History";
-import LogoutIcon from "@mui/icons-material/Logout";
-import LockResetIcon from "@mui/icons-material/LockReset";
-import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
-import NavigationBar from "../components/NavBar";
 
 import { createSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../contexts/CreateContext";
@@ -102,7 +96,6 @@ export default function DifficultyPage() {
   // Webpage Render
   return (
     <ThemeProvider theme={theme}>
-      <NavigationBar isAuthenticated={true} />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
 

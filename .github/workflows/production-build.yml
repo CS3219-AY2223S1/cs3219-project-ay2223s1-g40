@@ -40,11 +40,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Generate matching-service deployment package
       working-directory: matching-service
-      uses: thedoctor0/zip-release@main
-      with:
-        type: 'zip'
-        filename: 'matching-service.zip'
-        exclusions: '*.git* /*node_modules/* .dockerignore .env'
+      run: zip -r "matching-service.zip" * .ebextensions
     - name: Get timestamp
       uses: gerred/actions/current-time@master
       id: current-time

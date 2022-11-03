@@ -2,7 +2,7 @@ name: Production Build
 
 on:
   push:
-    branches: [ prod ]
+    branches: [ release ]
 
 jobs:
   deploy-user-service:

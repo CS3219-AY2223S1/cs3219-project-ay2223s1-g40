@@ -66,7 +66,10 @@ export class QuestionController {
   }
 
   @Get('/Difficulty/:difficulty')
-  async getDiffQuestion(@Res() response, @Param('difficulty') QuestionId: string) {
+  async getDiffQuestion(
+    @Res() response,
+    @Param('difficulty') QuestionId: string,
+  ) {
     try {
       const existingQuestion = await this.QuestionService.getDifficultyQuestion(
         QuestionId,

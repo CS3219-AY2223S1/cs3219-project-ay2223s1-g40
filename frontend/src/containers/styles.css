@@ -1,43 +1,71 @@
 h1 {
-    font-family: "Roboto";
-    text-align: center;
-    margin-bottom: 40px;
-    position: relative;
-  }
-  
-  .timer-wrapper {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .timer {
-    font-family: "Montserrat";
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .text {
-    color:black;
-  }
-  
-  .value {
-    font-size: 40px;
-  }
-  
-  .info {
-    position: relative;
-    max-width: 400px;
-    margin: 40px auto 0;
-    text-align: center;
-    font-size: 16px;
-  }
+  font-family: "Roboto";
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
 
-  .content__u3I1 code {
-    color: #546e7a;
-    background-color: #f7f9fa;
-    padding: 2px 4px;
-    font-size: 13px;
-    border-radius: 3px;
-    font-family: monospace;
+.timer-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.timer {
+  font-family: "Montserrat";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text {
+  color:black;
+}
+
+.value {
+  font-size: 40px;
+}
+
+.info {
+  position: relative;
+  max-width: 400px;
+  margin: 40px auto 0;
+  text-align: center;
+  font-size: 16px;
+}
+
+.content__u3I1 code {
+  color: #546e7a;
+  background-color: #f7f9fa;
+  padding: 2px 4px;
+  font-size: 13px;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.float-container {
+  border: 3px solid #fff;
+  padding: 20px;
+}
+
+.float-collab {
+    width: 70%;
+    height: 70vh;
+    float: left;
+}
+
+.float-chat {
+  width: 30%;
+  height: 74vh;
+  float: right;
+  padding: 20px;
+  border: 1px solid red;
+}
+
+#chat-window {
+  height: 25rem;
+}
+
+#chat-window-messages {
+  height: 18rem;
+  overflow: auto;
 }

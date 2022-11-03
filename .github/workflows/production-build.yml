@@ -44,8 +44,8 @@ jobs:
         type: 'zip'
         filename: 'matching-service.zip'
         exclusions: '*.git* /*node_modules/* .dockerignore .env'
-        directory: '/matching-service'
-        path: '/matching-service'
+        directory: /matching-service
+        path: /matching-service
     - name: Get timestamp
       uses: gerred/actions/current-time@master
       id: current-time

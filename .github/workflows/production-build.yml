@@ -39,13 +39,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Generate matching-service deployment package
+      working-directory: matching-service
       uses: thedoctor0/zip-release@main
       with:
         type: 'zip'
         filename: 'matching-service.zip'
         exclusions: '*.git* /*node_modules/* .dockerignore .env'
-        directory: /matching-service
-        path: /matching-service
     - name: Get timestamp
       uses: gerred/actions/current-time@master
       id: current-time

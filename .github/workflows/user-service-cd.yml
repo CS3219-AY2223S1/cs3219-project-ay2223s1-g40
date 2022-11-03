@@ -1,0 +1,151 @@
+name: Production Build
+
+on:
+  push:
+    branches: [ prod ]
+
+jobs:
+  deploy-user-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate user-service deployment package
+      working-directory: user-service
+      run: zip -r user-service.zip . 
+      - name: Get timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+      - name: Deploy user-service
+        uses: einaregilsson/beanstalk-deploy@v10
+        with:
+          aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
+          aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+          application_name: "user-service"
+          environment_name: "user-service-env"
+          region: "ap-southeast-1"
+          version_label: "user-service-${{ steps.format-time.outputs.replaced }}"
+          deployment_package: user-service/user-service.zip
+
+  deploy-matching-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate matching-service deployment package
+      working-directory: matching-service
+      run: zip -r matching-service.zip . 
+      - name: Get timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+      - name: Deploy matching-service
+        uses: einaregilsson/beanstalk-deploy@v10
+        with:
+          aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
+          aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+          application_name: "matching-service"
+          environment_name: "matching-service-env"
+          region: "ap-southeast-1"
+          version_label: "matching-service-${{ steps.format-time.outputs.replaced }}"
+          deployment_package: matching-service/matching-service.zip
+
+  deploy-question-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate question-service deployment package
+      working-directory: question-service
+      run: zip -r question-service.zip . 
+      - name: Get timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+      - name: Deploy question-service
+        uses: einaregilsson/beanstalk-deploy@v10
+        with:
+          aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
+          aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+          application_name: "question-service"
+          environment_name: "question-service-env"
+          region: "ap-southeast-1"
+          version_label: "question-service-${{ steps.format-time.outputs.replaced }}"
+          deployment_package: question-service/question-service.zip
+
+  deploy-collab-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate collab-service deployment package
+      working-directory: collab-service
+      run: zip -r collab-service.zip . 
+      - name: Get timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+      - name: Deploy collab-service
+        uses: einaregilsson/beanstalk-deploy@v10
+        with:
+          aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
+          aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+          application_name: "collab-service"
+          environment_name: "collab-service-env"
+          region: "ap-southeast-1"
+          version_label: "collab-service-${{ steps.format-time.outputs.replaced }}"
+          deployment_package: collab-service/collab-service.zip
+
+  deploy-chat-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate chat-service deployment package
+      working-directory: chat-service
+      run: zip -r chat-service.zip . 
+      - name: Get timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+      - name: Deploy chat-service
+        uses: einaregilsson/beanstalk-deploy@v10
+        with:
+          aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
+          aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
+          application_name: "chat-service"
+          environment_name: "chat-service-env"
+          region: "ap-southeast-1"
+          version_label: "chat-service-${{ steps.format-time.outputs.replaced }}"
+          deployment_package: chat-service/chat-service.zip

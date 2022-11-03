@@ -3,6 +3,7 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from "socket.io";
 import { respond } from './controller/match-controller.js';
+import "dotenv/config";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -24,4 +25,4 @@ const io = new Server(httpServer, {
 // handling over the io logic to the controller
 respond(io);
 
-httpServer.listen(8001);
+httpServer.listen(process.env.PORT);

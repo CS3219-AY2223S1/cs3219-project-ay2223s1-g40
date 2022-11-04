@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "deploy": "npm install --force && npm run build && npm run start:prod"
+    "deploy": "npm install --legacy-peer-deps && npm run build && npm run start:prod"
   },
   "dependencies": {
     "@nestjs/platform-express": "^9.1.4",

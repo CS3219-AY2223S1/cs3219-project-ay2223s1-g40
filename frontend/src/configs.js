@@ -22,4 +22,4 @@ export const URI_COLLAB_SVC =
 export const URI_QUESTION_SVC = 
   process.env.REACT_APP_URI_QUESTION_SVC || "http://localhost:3002";
 export const URI_CHAT_SVC = 
-  process.env.REACT_APP_URI_USER_SVC || "http://localhost:3003";
+  process.env.REACT_APP_URI_CHAT_SVC || "http://localhost:3003";

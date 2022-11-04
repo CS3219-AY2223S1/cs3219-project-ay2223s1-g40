@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import NavigationBar from "../components/NavBar";
 
 function SignupPage() {
+
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

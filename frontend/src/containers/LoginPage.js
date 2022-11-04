@@ -79,7 +79,7 @@ function LoginPage() {
       .post(
         URL_USER_SVC_LOGIN,
         { username, password },
-        { withCredentials: true }
+        // { withCredentials: true }
       )
       .catch((err) => {
         if (

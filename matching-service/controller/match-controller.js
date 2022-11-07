@@ -38,7 +38,9 @@ export const respond = (io) => {
 
     // nsp => including myself
     socket.on("request-question", async ({ difficulty, roomID }) => {
-      const response = await fetch('http://localhost:3002/questions/difficulty/' + difficulty)
+      const response = await fetch('http://question-service-env.eba-smjqhekw.ap-southeast-1.elasticbeanstalk.com/questions/difficulty/' 
+        + difficulty);
+      console.log(response);
       const question = await response.json();
       socket.nsp.to(roomID).emit("distribute-question", question);
     })

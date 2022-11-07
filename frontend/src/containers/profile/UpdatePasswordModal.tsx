@@ -164,7 +164,7 @@ const UpdatePasswordModal = ({
                       message: `Password must be at most ${MAX_LENGTH} characters`,
                     },
                     validate: (value) =>
-                      value == password || "Passwords do not match",
+                      value === password || "Passwords do not match",
                   })}
                 />
                 {errors.passwordAgain && (

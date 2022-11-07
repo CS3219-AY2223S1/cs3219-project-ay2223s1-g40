@@ -27,11 +27,11 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
+        <Route element={<Layout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
 
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route element={<PrivateRoute />}>
-          <Route element={<Layout />}>
+          <Route element={<PrivateRoute />}>
             <Route path="/difficulty" element={<DifficultyPage />} />
             <Route path="/countdown" element={<CountdownPage />} />
             <Route path="/room" element={<RoomPage />} />

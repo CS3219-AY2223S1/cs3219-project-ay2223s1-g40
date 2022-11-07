@@ -7,6 +7,7 @@ import { SocketProvider } from "./contexts/CreateContext";
 import { io } from "socket.io-client";
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
+import { URI_MATCHING_SVC } from "configs";
 
 const config = {
   initialColorMode: "dark",
@@ -19,7 +20,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      <SocketProvider value={io("http://localhost:8001")}>
+      <SocketProvider value={io(URI_MATCHING_SVC)}>
         <App />
       </SocketProvider>
     </ChakraProvider>

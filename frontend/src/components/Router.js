@@ -19,19 +19,18 @@ import LandingPage from "../containers/LandingPage";
 
 const PrivateRoute = () => {
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
-  return !isAuthenticated ? <Navigate to="/" /> : <Outlet />;
+  return !isAuthenticated ? <Navigate to="/login" /> : <Outlet />;
 };
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route element={<Layout />}>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-
           <Route element={<PrivateRoute />}>
+            <Route path="/" element={<DifficultyPage />} />
             <Route path="/difficulty" element={<DifficultyPage />} />
             <Route path="/countdown" element={<CountdownPage />} />
             <Route path="/room" element={<RoomPage />} />

@@ -34,6 +34,7 @@ const UpdatePasswordModal = ({
   const toast = useToast();
   const [password, setPassword] = useState("");
   const zustandUsername = useUserStore((state) => state.username);
+  const jwtToken = useUserStore((state) => state.token);
 
   type FormValues = {
     username: string;
@@ -58,7 +59,11 @@ const UpdatePasswordModal = ({
 
   const onSubmitHandler = async (values: FormValues) => {
     try {
-      const response = await clientUserService.post("/password", values);
+      const response = await clientUserService.post(
+        "/password",
+        values,
+        jwtToken
+      );
       const { message } = response.data;
       toast({
         title: message,

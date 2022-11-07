@@ -48,13 +48,13 @@ function SignInForm() {
   const onSubmitHandler = async (values: FormValues) => {
     try {
       const response = await clientUserService.post("/login", values);
-      const { userId, username } = response.data;
+      const { userId, username, token } = response.data;
       toast({
         title: "Successfully logged in",
         status: "success",
         isClosable: true,
       });
-      zustandLogin(userId, username);
+      zustandLogin(userId, username, token);
       navigate("/difficulty", { replace: true });
     } catch (err: any) {
       const message = err?.response?.data?.message;

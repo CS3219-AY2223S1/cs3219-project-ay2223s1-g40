@@ -1,7 +1,8 @@
 import axios from "axios";
+import { URL_USER_SVC } from "../configs";
 
 const axiosClientUserService = axios.create({
-  baseURL: "http://localhost:8000/api/user",
+  baseURL: URL_USER_SVC,
 });
 
 const requests = (api: any) => {

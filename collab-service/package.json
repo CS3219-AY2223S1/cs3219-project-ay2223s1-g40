@@ -2,7 +2,8 @@
   "name": "collab-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
     "devStart": "nodemon server.js"
   },
@@ -12,6 +13,9 @@
     "nodemon": "^2.0.20"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
     "socket.io": "^4.5.2"
   }
 }

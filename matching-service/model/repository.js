@@ -10,28 +10,28 @@ export async function createMatch(params) {
   return matchModel.create(params);
 }
 
-export async function getAvailableMatch(socketId, difficulty) {
-  console.log(socketId, difficulty);
+export async function getAvailableMatch(userId, difficulty) {
+  console.log(userId, difficulty);
   const availableMatch = await matchModel.findOne({
     where: { 
       difficulty,
       hostPlayer: {
-        [Op.not]: socketId,  
+        [Op.not]: userId,  
       }
     }
   })
   .then(result => {
-    return matchModel.destroy({ where: { difficulty }})
+    return matchModel.destroy({ where: { hostPlayer: userId, difficulty }})
       .then(u => result)
   })
   .catch(error => error);
   return availableMatch;
 }
 
-export async function destroyMatch(hostPlayer) {
+export async function destroyMatch(hostSocket) {
   return await matchModel.destroy({
     where: {
-      hostPlayer
+      hostSocket
     }
   })
 }

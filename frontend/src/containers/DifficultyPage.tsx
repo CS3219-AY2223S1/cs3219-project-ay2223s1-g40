@@ -138,7 +138,6 @@ export default function DifficultyPage() {
               })}
             </Stack>
           </Box>
-          <Copyright sx={{ mt: 8 }} />
           {/* <DifficultyModal
             isOpen={isOpen}
             onClose={onClose}

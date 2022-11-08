@@ -12,7 +12,7 @@ export const respond = (io) => {
         await createMatch(userId, socket.id, difficulty);
       } else {
         const hostPlayer = availableMatch.dataValues.hostPlayer;
-        io.emit("match-success", hostPlayer, userId);
+        io.emit("match-success", { hostPlayer, guestPlayer: userId });
       }
     })
 

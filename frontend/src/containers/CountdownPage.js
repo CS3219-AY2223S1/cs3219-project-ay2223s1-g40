@@ -53,7 +53,7 @@ export default function CountdownPage() {
     // Initialize when the page is rendered
     socket.emit("request-match", { userId: zustandUserId, difficulty});
 
-    socket.on("match-success", (hostPlayer, guestPlayer) => {
+    socket.on("match-success", ({hostPlayer, guestPlayer}) => {
       console.log("received");
       if (zustandUserId === hostPlayer || zustandUserId === guestPlayer) {
         socket.emit("join-room", hostPlayer);
@@ -92,7 +92,7 @@ export default function CountdownPage() {
         <CountdownCircleTimer
           isPlaying
           size={250}
-          duration={10}
+          duration={30}
           colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
           colorsTime={[10, 6, 3, 0]}
           onComplete={() => ({ shouldRepeat: false, delay: 1 })}

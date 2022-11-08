@@ -53,7 +53,7 @@ export default function CountdownPage() {
     // Initialize when the page is rendered
     socket.emit("request-match", { userId: zustandUserId, difficulty});
 
-    socket.on("match-success", (hostPlayer, guestPlayer) => {
+    socket.on("match-success", ({hostPlayer, guestPlayer}) => {
       console.log("received");
       if (zustandUserId === hostPlayer || zustandUserId === guestPlayer) {
         socket.emit("join-room", hostPlayer);

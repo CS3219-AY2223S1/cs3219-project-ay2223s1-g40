@@ -48,21 +48,23 @@ const destroySocket = (socket) => {
   });
 };
 
-describe("test suit: Request Match", () => {
-  test("test: Request Match", async () => {
+describe("Match between two different users should work", () => {
+  test("test: request-match", async () => {
     // create socket for communication
-    const socketClient = await initSocket();
+    const socketClient1 = await initSocket();
+    const socketClient2 = await initSocket();
 
     // create new promise for server response
     const serverResponse = new Promise((resolve, reject) => {
       // define a handler for the test event
-      socketClient.on(ev.res_ECHO, (data4Client) => {
+      socketClient2.on(ev.res_SUCCESS, (data4Client) => {
         //process data received from server
-        const { message } = data4Client;
-        logger.info("Server says: " + message);
+        const { hostPlayer, guestPlayer } = data4Client;
+        logger.info("Server says: " + hostPlayer + " " + guestPlayer);
 
         // destroy socket after server responds
-        destroySocket(socketClient);
+        destroySocket(socketClient1);
+        destroySocket(socketClient2);
 
         // return data for testing
         resolve(data4Client);
@@ -75,16 +77,19 @@ describe("test suit: Request Match", () => {
     });
 
     // define data 4 server
-    const data4Server = { userId: "123", difficulty: "beginner" };
+    const data4Server1 = { userId: "123", difficulty: "beginner" };
+    const data4Server2 = { userId: "456", difficulty: "beginner" };
 
     // emit event with data to server
-    logger.info("Emitting Request Match event");
-    socketClient.emit(ev.req_ECHO, data4Server);
+    logger.info("Emitting request-match event");
+    socketClient2.emit(ev.req_REQ, data4Server2);
+    socketClient1.emit(ev.req_REQ, data4Server1);
 
     // wait for server to respond
-    const { status, message } = await serverResponse;
+    const {hostPlayer, guestPlayer} = await serverResponse;
 
     // check the response data
-    expect(message).toBe("Hello World from matching-service");
+    expect(hostPlayer).toBe("123");
+    expect(guestPlayer).toBe("456");
   });
 });

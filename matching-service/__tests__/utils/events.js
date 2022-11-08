@@ -4,10 +4,10 @@ module.exports = {
     DISCONNECT: "disconnect",
   
     // requests
-    req_ECHO: "request-match",
+    req_REQ: "request-match",
     req_BELLO: "#bello",
   
     // responses
-    res_ECHO: "@echo",
+    res_SUCCESS: "match-success",
     res_BELLO: "@bello"
-  };
+};

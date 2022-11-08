@@ -5,14 +5,14 @@ export const respond = (io) => {
   io.on("connection", (socket) => {
     console.log("a user connected");
 
-    socket.on("request-match", async (difficulty) => {
+    socket.on("request-match", async ({ userId, difficulty }) => {
       console.log("match requested");
-      const availableMatch = await getAvailableMatch(socket.id, difficulty);
+      const availableMatch = await getAvailableMatch(userId, difficulty);
       if (!availableMatch) {
-        await createMatch(socket.id, difficulty);
+        await createMatch(userId, socket.id, difficulty);
       } else {
         const hostPlayer = availableMatch.dataValues.hostPlayer;
-        io.emit("match-success", hostPlayer, socket.id);
+        io.emit("match-success", { hostPlayer, guestPlayer: userId });
       }
     })
 
@@ -23,12 +23,12 @@ export const respond = (io) => {
 
     socket.on("cancel-match", async () => {
       await destroyMatch(socket.id);
-      socket.disconnect();
+      console.log("match cancelled");
     })
     
     socket.on("leave-room", (roomId) => {
       socket.leave(roomId);
-      socket.disconnect();
+      console.log("left room");
     })
 
     socket.on("disconnect", async () => {
@@ -38,21 +38,23 @@ export const respond = (io) => {
 
     // nsp => including myself
     socket.on("request-question", async ({ difficulty, roomID }) => {
-      const response = await fetch('http://localhost:3002/questions/difficulty/' + difficulty)
+      const response = await fetch('http://question-service-env.eba-smjqhekw.ap-southeast-1.elasticbeanstalk.com/questions/difficulty/' 
+        + difficulty);
+      console.log(response);
       const question = await response.json();
       socket.nsp.to(roomID).emit("distribute-question", question);
     })
   });
 }
 
-const getAvailableMatch = async (socketId, difficulty) => {
-  const resp = await _getAvailableMatch(socketId, difficulty);
+const getAvailableMatch = async (userId, difficulty) => {
+  const resp = await _getAvailableMatch(userId, difficulty);
   return resp;
 }
 
-const createMatch = async (hostPlayer, difficulty) => {
+const createMatch = async (hostPlayer, hostSocket, difficulty) => {
   try {
-    const resp = await _createMatch(hostPlayer, difficulty);
+    const resp = await _createMatch(hostPlayer, hostSocket, difficulty);
     if (resp.err) {
       return;
       // return res.status(400).json({message: 'Could not create a new match!'});
@@ -67,6 +69,6 @@ const createMatch = async (hostPlayer, difficulty) => {
   }
 }
 
-const destroyMatch = async (hostPlayer) => {
-    await _destroyMatch(hostPlayer);
+const destroyMatch = async (hostSocket) => {
+    await _destroyMatch(hostSocket);
 }

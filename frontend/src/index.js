@@ -7,6 +7,7 @@ import { SocketProvider } from "./contexts/CreateContext";
 import { io } from "socket.io-client";
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
+import { URI_MATCHING_SVC } from "configs";
 
 const config = {
   initialColorMode: "light",
@@ -17,13 +18,13 @@ const theme = extendTheme({ config });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ChakraProvider theme={theme}>
-      <SocketProvider value={io("http://localhost:8001")}>
+      <SocketProvider value={io(URI_MATCHING_SVC)}>
         <App />
       </SocketProvider>
     </ChakraProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -4,7 +4,7 @@ module.exports = {
     DISCONNECT: "disconnect",
   
     // requests
-    req_ECHO: "#echo",
+    req_ECHO: "request-match",
     req_BELLO: "#bello",
   
     // responses

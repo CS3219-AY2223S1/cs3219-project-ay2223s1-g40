@@ -48,8 +48,8 @@ const destroySocket = (socket) => {
   });
 };
 
-describe("test suit: Echo", () => {
-  test("test: ECHO", async () => {
+describe("test suit: Request Match", () => {
+  test("test: Request Match", async () => {
     // create socket for communication
     const socketClient = await initSocket();
 
@@ -75,10 +75,10 @@ describe("test suit: Echo", () => {
     });
 
     // define data 4 server
-    const data4Server = { message: "CLIENT ECHO" };
+    const data4Server = { userId: "123", difficulty: "beginner" };
 
     // emit event with data to server
-    logger.info("Emitting ECHO event");
+    logger.info("Emitting Request Match event");
     socketClient.emit(ev.req_ECHO, data4Server);
 
     // wait for server to respond

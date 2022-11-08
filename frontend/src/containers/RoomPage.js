@@ -289,41 +289,6 @@ export default function RoomPage() {
     );
   };
 
-  const Chat = () => {
-    return (
-      <Flex direction="column" justifyContent="flex-end" height="100%">
-        <Flex direction="column" gap="3px" my="5px" overflowY="auto">
-          <Box p={1}>
-            <Grid alignItems="center">
-              <Grid id="chat-window">
-                <List id="chat-window-messages">
-                  {listChatMessages}
-                  <ListItem ref={scrollBottomRef}></ListItem>
-                </List>
-              </Grid>
-            </Grid>
-          </Box>
-        </Flex>
-        <Grid>
-          <FormControl fullWidth>
-            <Input
-              onChange={handleMessageChange}
-              onKeyDown={handleEnterKey}
-              value={message}
-              placeholder="Type your message..."
-              variant="outline"
-            />
-          </FormControl>
-        </Grid>
-        <Grid>
-          <IconButton onClick={sendMessage} aria-label="send" color="blue">
-            <SendIcon />
-          </IconButton>
-        </Grid>
-      </Flex>
-    );
-  };
-
   return (
     <Flex direction={"row"} wrap="wrap" flex={1}>
       <Flex
@@ -339,7 +304,36 @@ export default function RoomPage() {
         <Divider />
 
         <Box height="50%" p={6} pt={0}>
-          <Chat />
+          <Flex direction="column" justifyContent="flex-end" height="100%">
+            <Flex direction="column" gap="3px" my="5px" overflowY="auto">
+              <Box p={1}>
+                <Grid alignItems="center">
+                  <Grid id="chat-window">
+                    <List id="chat-window-messages">
+                      {listChatMessages}
+                      <ListItem ref={scrollBottomRef}></ListItem>
+                    </List>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Flex>
+            <Grid>
+              <FormControl fullWidth>
+                <Input
+                  onChange={handleMessageChange}
+                  onKeyDown={handleEnterKey}
+                  value={message}
+                  placeholder="Type your message..."
+                  variant="outline"
+                />
+              </FormControl>
+            </Grid>
+            <Grid>
+              <IconButton onClick={sendMessage} aria-label="send" color="blue">
+                <SendIcon />
+              </IconButton>
+            </Grid>
+          </Flex>
         </Box>
       </Flex>
       <Divider orientation="vertical" />

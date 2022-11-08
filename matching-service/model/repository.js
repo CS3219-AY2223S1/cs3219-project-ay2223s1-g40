@@ -21,7 +21,7 @@ export async function getAvailableMatch(userId, difficulty) {
     }
   })
   .then(result => {
-    return matchModel.destroy({ where: { hostPlayer: userId, difficulty }})
+    return matchModel.destroy({ where: { difficulty }})
       .then(u => result)
   })
   .catch(error => error);

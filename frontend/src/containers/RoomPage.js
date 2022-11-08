@@ -4,7 +4,6 @@ import React, {
   useRef,
   useState,
   useLayoutEffect,
-  Fragment,
 } from "react";
 
 import {
@@ -12,7 +11,6 @@ import {
   Button,
   Container,
   Heading,
-  Alert,
   AlertDialog,
   AlertDialogContent,
   AlertDialogHeader,
@@ -28,14 +26,14 @@ import {
   Input,
   Flex,
 } from "@chakra-ui/react";
-import Snackbar from "@mui/material/Snackbar";
 
-import { useSearchParams, useNavigate } from "react-router-dom";
-import SocketContext from "../contexts/CreateContext";
+import { useToast } from "@chakra-ui/react";
 
 import { FormControl } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
+import { useSearchParams, useNavigate } from "react-router-dom";
+import SocketContext from "../contexts/CreateContext";
 import io from "socket.io-client";
 import "quill/dist/quill.snow.css";
 import Quill from "quill";
@@ -246,7 +244,7 @@ export default function RoomPage() {
 
   // Submit Button
   const [dialogueOpen, setDialogueOpen] = useState(false);
-  const [toastOpen, setToastOpen] = useState(false);
+  const toast = useToast();
 
   const requestSubmit = () => {
     setDialogueOpen(true);
@@ -260,16 +258,19 @@ export default function RoomPage() {
     console.log("Left");
     navigate("/difficulty");
   };
-  const handleCloseToast = () => {
-    setToastOpen(false);
-  };
 
   useEffect(() => {
     if (!chatSocket) {
       return;
     }
     chatSocket.on("notify-leave-room", () => {
-      setToastOpen(true);
+      toast({
+        title: "Your peer has submitted the session and left the room.",
+        status: 'info',
+        duration: 5000,
+        position: "top",
+        isClosable: true,
+      })
     });
     return () => {
       chatSocket.off("notify-leave-room");
@@ -359,17 +360,6 @@ export default function RoomPage() {
           <div class="float-collab" id="container" ref={wrapperRef}></div>
         </Box>
       </Flex>
-
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={toastOpen}
-        autoHideDuration={5000}
-        onClose={handleCloseToast}
-      >
-        <Alert status="info" sx={{ fontSize: 16, width: "100%" }}>
-          Your peer has submitted the session and left the room.
-        </Alert>
-      </Snackbar>
       <Box
         sx={{
           height: "25%",
@@ -380,24 +370,25 @@ export default function RoomPage() {
           Submit
         </Button>
       </Box>
-      <AlertDialog open={dialogueOpen}>
-        <AlertDialogOverlay>
-          <AlertDialogHeader>
-            {"Do you want to submit the session?"}
-          </AlertDialogHeader>
+      <AlertDialog isOpen={dialogueOpen} isCentered>
+        <AlertDialogOverlay />
           <AlertDialogContent>
+            <AlertDialogHeader>
+              Do you want to submit the session?
+            </AlertDialogHeader>
             <AlertDialogBody id="alert-dialog-description">
               Have you and your peer agreed to submit the session? We advise you
               to talk to your peer before submitting the session.
             </AlertDialogBody>
-          </AlertDialogContent>
           <AlertDialogFooter>
-            <Button onClick={handleClose}>Don't submit yet</Button>
-            <Button onClick={handleSubmit} autoFocus>
+            <Button onClick={handleClose}>
+              Don't submit yet
+            </Button>
+            <Button onClick={handleSubmit} colorScheme='blue' ml={2}>
               Submit
             </Button>
           </AlertDialogFooter>
-        </AlertDialogOverlay>
+        </AlertDialogContent>
       </AlertDialog>
     </Flex>
   );

@@ -6,31 +6,34 @@ import React, {
   useLayoutEffect,
   Fragment,
 } from "react";
-import { Button, Heading } from "@chakra-ui/react";
-import Box from "@mui/material/Box";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import SocketContext from "../contexts/CreateContext";
-import { Typography } from "@mui/material";
-import { Container } from "@chakra-ui/react";
 
 import {
-  FormControl,
-  getInputAdornmentUtilityClass,
-  Grid,
-  IconButton,
+  Box,
+  Button,
+  Container,
+  Heading,
+  Alert,
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogOverlay,
+  Divider,
   List,
   ListItem,
-  ListItemText,
-  Paper,
-  TextField,
-} from "@mui/material";
+  Text,
+  Grid,
+  IconButton,
+  Input,
+  Flex,
+} from "@chakra-ui/react";
+import Snackbar from "@mui/material/Snackbar";
+
+import { useSearchParams, useNavigate } from "react-router-dom";
+import SocketContext from "../contexts/CreateContext";
+
+import { FormControl } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
 import io from "socket.io-client";
@@ -192,9 +195,7 @@ export default function RoomPage() {
   };
   const listChatMessages = chatMessages.map((chatMessageDto, index) => (
     <ListItem key={index}>
-      <ListItemText
-        primary={`${chatMessageDto.user}: ${chatMessageDto.message}`}
-      />
+      <Text>{`${chatMessageDto.user}: ${chatMessageDto.message}`}</Text>
     </ListItem>
   ));
 
@@ -275,105 +276,89 @@ export default function RoomPage() {
     };
   }, [chatSocket]);
 
-  return (
-    <Box>
-      <Box
-        className="submit-button"
-        sx={{
-          height: "25%",
-          margin: 2,
-        }}
-      >
-        <Button
-          onClick={requestSubmit}
-          type="submit"
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-        >
-          Submit
-        </Button>
-      </Box>
-
-      <Dialog
-        open={dialogueOpen}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Do you want to submit the session?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Have you and your peer agreed to submit the session? We advise you
-            to talk to your peer before submitting the session.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Don't submit yet</Button>
-          <Button onClick={handleSubmit} autoFocus>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Box
-        sx={{
-          margin: 2,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          textAlign: "center",
-          borderColor: "primary.main",
-          borderRadius: "16px",
-        }}
-      >
-        <Heading as="h1" sx={{ marginBottom: 2 }}>
+  const Question = () => {
+    return (
+      <Box padding={4} minWidth="300px" width="50vw">
+        <Heading as="h1" sx={{ marginBottom: 2 }} textAlign="left">
           {questionTitle}
         </Heading>
-        {formatHtml(questionDescription)}
+        {/* <Text> {formatHtml(questionDescription)} </Text> */}
+        <Text> {questionDescription} </Text>
       </Box>
+    );
+  };
 
-      <div className="float-container">
-        <div className="float-collab" id="container" ref={wrapperRef}></div>
-        <div className="float-chat">
-          <Fragment>
-            <Container>
-              <Paper>
-                <Box p={1}>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid id="chat-window" xs={12} item>
-                      <List id="chat-window-messages">
-                        {listChatMessages}
-                        <ListItem ref={scrollBottomRef}></ListItem>
-                      </List>
-                    </Grid>
-                    <Grid xs={9} item>
-                      <FormControl fullWidth>
-                        <TextField
-                          onChange={handleMessageChange}
-                          onKeyDown={handleEnterKey}
-                          value={message}
-                          label="Type your message..."
-                          variant="outlined"
-                        />
-                      </FormControl>
-                    </Grid>
-                    <Grid xs={1} item>
-                      <IconButton
-                        onClick={sendMessage}
-                        aria-label="send"
-                        color="primary"
-                      >
-                        <SendIcon />
-                      </IconButton>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Paper>
-            </Container>
-          </Fragment>
-        </div>
-      </div>
+  const Chat = () => {
+    return (
+      <Flex direction="column" justifyContent="flex-end" height="100%">
+        <Flex direction="column" gap="3px" my="5px" overflowY="auto">
+          <Box p={1}>
+            <Grid alignItems="center">
+              <Grid id="chat-window">
+                <List id="chat-window-messages">
+                  {listChatMessages}
+                  <ListItem ref={scrollBottomRef}></ListItem>
+                </List>
+              </Grid>
+            </Grid>
+          </Box>
+        </Flex>
+        <Grid>
+          <FormControl fullWidth>
+            <Input
+              onChange={handleMessageChange}
+              onKeyDown={handleEnterKey}
+              value={message}
+              placeholder="Type your message..."
+              variant="outline"
+            />
+          </FormControl>
+        </Grid>
+        <Grid>
+          <IconButton onClick={sendMessage} aria-label="send" color="blue">
+            <SendIcon />
+          </IconButton>
+        </Grid>
+      </Flex>
+    );
+  };
+
+  return (
+    <Flex direction={"row"} wrap="wrap" flex={1}>
+      <Flex
+        direction={"column"}
+        justifyContent="space-between"
+        minWidth="300px"
+        flex={1}
+        height="100%"
+      >
+        <Box height="50%" p={6} pb={0}>
+          <Question />
+        </Box>
+        <Divider />
+
+        <Box height="50%" p={6} pt={0}>
+          <Chat />
+        </Box>
+      </Flex>
+      <Divider orientation="vertical" />
+
+      <Flex
+        direction={"column"}
+        padding={2}
+        minWidth="300px"
+        width={"50vw"}
+        height="100vh"
+      >
+        <Box
+          border={2}
+          borderColor="black"
+          alignContent={"center"}
+          alignItems="center"
+        >
+          <div class="float-collab" id="container" ref={wrapperRef}></div>
+        </Box>
+      </Flex>
 
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -381,10 +366,39 @@ export default function RoomPage() {
         autoHideDuration={5000}
         onClose={handleCloseToast}
       >
-        <Alert severity="info" sx={{ fontSize: 16, width: "100%" }}>
+        <Alert status="info" sx={{ fontSize: 16, width: "100%" }}>
           Your peer has submitted the session and left the room.
         </Alert>
       </Snackbar>
-    </Box>
+      <Box
+        sx={{
+          height: "25%",
+          margin: 2,
+        }}
+      >
+        <Button onClick={requestSubmit} type="submit" colorScheme="blue">
+          Submit
+        </Button>
+      </Box>
+      <AlertDialog open={dialogueOpen}>
+        <AlertDialogOverlay>
+          <AlertDialogHeader>
+            {"Do you want to submit the session?"}
+          </AlertDialogHeader>
+          <AlertDialogContent>
+            <AlertDialogBody id="alert-dialog-description">
+              Have you and your peer agreed to submit the session? We advise you
+              to talk to your peer before submitting the session.
+            </AlertDialogBody>
+          </AlertDialogContent>
+          <AlertDialogFooter>
+            <Button onClick={handleClose}>Don't submit yet</Button>
+            <Button onClick={handleSubmit} autoFocus>
+              Submit
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </Flex>
   );
 }

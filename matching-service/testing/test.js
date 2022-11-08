@@ -15,7 +15,7 @@ const initSocket = () => {
       "force new connection": true,
     });
 
-    // define event handler for sucessfull connection
+    // define event handler for successful connection
     socket.on(ev.CONNECT, () => {
       logger.info("connected");
       resolve(socket);
@@ -85,6 +85,6 @@ describe("test suit: Echo", () => {
     const { status, message } = await serverResponse;
 
     // check the response data
-    expect(message).toBe("a user connected");
+    expect(message).toBe("Hello World from matching-service");
   });
 });

@@ -97,7 +97,7 @@ export default function DifficultyPage() {
             alignItems: "center",
           }}
         >
-          <Box bgColor="#9c27b0" p={2} borderRadius="full">
+          <Box bgColor="teal" p={2} borderRadius="full">
             <Icon as={StickyNote2RoundedIcon} />
           </Box>
           <Box mt={4} textAlign="center">
@@ -114,6 +114,13 @@ export default function DifficultyPage() {
               {["Beginner", "Intermediate", "Advanced"].map((value) => {
                 return (
                   <Button
+                    colorScheme={
+                      value.toLowerCase() === "beginner"
+                        ? "whatsapp"
+                        : value.toLowerCase() === "intermediate"
+                        ? "yellow"
+                        : "red"
+                    }
                     onClick={() => {
                       difficultyPressed(value.toLowerCase());
                       console.log(value);

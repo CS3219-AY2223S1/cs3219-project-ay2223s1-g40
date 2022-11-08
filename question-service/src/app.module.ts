@@ -12,7 +12,7 @@ import { QuestionSchema } from './Questions/question.schema';
   imports: [
     MongooseModule.forRootAsync({
       useFactory: () => ({
-        uri: 'mongodb+srv://cs3219-KL:JSJvoagKsBHhIGMT@cs3219team40.gaxbfpm.mongodb.net/test',
+        uri: process.env.DB_CLOUD_URI,
       }),
     }),
     MongooseModule.forFeature([{ name: 'Question', schema: QuestionSchema }]),

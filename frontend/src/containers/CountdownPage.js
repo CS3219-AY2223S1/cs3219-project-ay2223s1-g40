@@ -4,8 +4,7 @@ import "./styles.css";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 
 import CancelIcon from "@mui/icons-material/Cancel";
-import { Button } from "@chakra-ui/react";
-import Box from "@mui/material/Box";
+import { Button, Box, Heading } from "@chakra-ui/react";
 
 import { useSearchParams } from "react-router-dom";
 import { createSearchParams, useNavigate } from "react-router-dom";
@@ -87,7 +86,10 @@ export default function CountdownPage() {
 
   return (
     <div className="App">
-      <h1>PeerPrep</h1>
+      <Heading textAlign="center" m={4}>
+        {" "}
+        Peerprep{" "}
+      </Heading>
       <div className="timer-wrapper">
         <CountdownCircleTimer
           isPlaying
@@ -105,9 +107,10 @@ export default function CountdownPage() {
       </p>
       <Box textAlign="center">
         <Button
+          borderWidth="1px"
+          variant="solid"
           onClick={returnHome}
-          type="submit"
-          variant="contained"
+          colorScheme="facebook"
           sx={{ mt: 3, mb: 2 }}
           leftIcon={<CancelIcon />}
         >

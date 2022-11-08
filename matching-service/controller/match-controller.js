@@ -2,6 +2,9 @@ import { ormCreateMatch as _createMatch, ormGetAvailableMatch as _getAvailableMa
 import fetch from "cross-fetch";
 
 export const respond = (io) => {
+  const URI_QUESTION_SVC = process.env.URI_QUESTION_SVC || 
+    "http://question-service-env.eba-smjqhekw.ap-southeast-1.elasticbeanstalk.com/questions/difficulty/";
+
   io.on("connection", (socket) => {
     console.log("a user connected");
 
@@ -38,8 +41,7 @@ export const respond = (io) => {
 
     // nsp => including myself
     socket.on("request-question", async ({ difficulty, roomID }) => {
-      const response = await fetch('http://question-service-env.eba-smjqhekw.ap-southeast-1.elasticbeanstalk.com/questions/difficulty/' 
-        + difficulty);
+      const response = await fetch(URI_QUESTION_SVC + difficulty);
       console.log(response);
       const question = await response.json();
       socket.nsp.to(roomID).emit("distribute-question", question);

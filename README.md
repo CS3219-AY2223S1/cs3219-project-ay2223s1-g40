@@ -1,8 +1,12 @@
 # PeerPrep
 
+<img width="1503" alt="Screenshot 2022-11-09 at 1 58 54 AM" src="https://user-images.githubusercontent.com/60286063/200640637-cc93a4c3-d86f-4ffc-aa88-8bb741ce4380.png">
+
 PeerPrep a web application that seeks to help students better prepare themselves for the highly challenging technical interviews. 
 
 PeerPrep helps users to find a fellow peer who wants to work on a problem of similar difficulty, and allows them to work together and communicate with each other on the problem.
+
+Access our app [here](http://peerprepfe.s3-website-ap-southeast-1.amazonaws.com/login) (Active as of Nov 9th, 2022)
 
 ## How to start (locally)
 

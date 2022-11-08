@@ -1,15 +1,20 @@
 import axios from "axios";
+import { URL_USER_SVC } from "../configs";
 
 const axiosClientUserService = axios.create({
-  baseURL: "http://localhost:8000/api/user",
+  baseURL: URL_USER_SVC,
 });
 
-const requests = (api) => {
+const requests = (api: any) => {
   return {
-    get: (url) => {
-      return api.get(url);
+    get: (url: string, token?: string) => {
+      return api.get(url, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
     },
-    post: (url, data, token) => {
+    post: (url: string, data: object, token?: string) => {
       if (token) {
         return api.post(url, data, {
           headers: {
@@ -19,14 +24,14 @@ const requests = (api) => {
       }
       return api.post(url, data);
     },
-    patch: (url, data, token) => {
+    patch: (url: string, data: object, token?: string) => {
       return api.patch(url, data, {
         headers: {
           Authorization: "Bearer " + token,
         },
       });
     },
-    delete: (url, token) => {
+    delete: (url: string, token?: string) => {
       return api.delete(url, {
         headers: {
           Authorization: "Bearer " + token,

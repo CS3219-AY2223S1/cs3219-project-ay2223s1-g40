@@ -2,12 +2,12 @@
   "name": "matching-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "test": "jest --verbose --watch-All"
+    "test": "jest --verbose --watch-All",
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "cross-fetch": "^3.1.5",
-    "dotenv": "^16.0.2",
+    "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "jest": "^25.2.3",
     "mongoose": "^6.5.4",

@@ -5,7 +5,10 @@ const MatchModel = (sequelize) => sequelize.define('MatchModel', {
   hostPlayer: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+  },
+  hostSocket: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   difficulty: {
     type: DataTypes.STRING,

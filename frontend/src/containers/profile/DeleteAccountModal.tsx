@@ -30,13 +30,18 @@ const DeleteAccountModal = ({
   const toast = useToast();
   const zustandUsername = useUserStore((state) => state.username);
   const zustandLogout = useUserStore((state) => state.logout);
+  const jwtToken = useUserStore((state) => state.token);
 
   const onSubmitHandler = async () => {
     setIsSubmitting(true);
     try {
-      const response = await clientUserService.post("/delete", {
-        username: zustandUsername,
-      });
+      const response = await clientUserService.post(
+        "/delete",
+        {
+          username: zustandUsername,
+        },
+        jwtToken
+      );
       const { message } = response.data;
       toast({
         title: message,
@@ -50,6 +55,8 @@ const DeleteAccountModal = ({
         status: "error",
         isClosable: true,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

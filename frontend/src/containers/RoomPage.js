@@ -9,7 +9,6 @@ import React, {
 import {
   Box,
   Button,
-  Container,
   Heading,
   AlertDialog,
   AlertDialogContent,
@@ -38,6 +37,7 @@ import io from "socket.io-client";
 import "quill/dist/quill.snow.css";
 import Quill from "quill";
 
+import useUserStore from "../store/userStore";
 import { URI_COLLAB_SVC, URI_CHAT_SVC } from "../configs";
 
 // Chat Message Encapsulation
@@ -53,6 +53,7 @@ export default function RoomPage() {
   const socketRef = useRef(useContext(SocketContext));
   const socket = socketRef.current;
   const navigate = useNavigate();
+  const zustandUserId = useUserStore((state) => state.userId);
 
   // Warning when refreshing
   useEffect(() => {
@@ -137,6 +138,7 @@ export default function RoomPage() {
   };
   const [chatMessages, setChatMessages] = useState([welcomeMessage]);
   const [message, setMessage] = useState("");
+  const CHAT_HEIGHT = 68.7;
 
   const initialiseChat = () => {
     const chatS = io(URI_CHAT_SVC);
@@ -202,10 +204,11 @@ export default function RoomPage() {
   const [questionDescription, setQuestionDescription] = useState("");
 
   useEffect(() => {
-    if (socket.id === roomID) {
+    if (zustandUserId === roomID) {
       socket.emit("request-question", { difficulty, roomID });
     }
     socket.on("distribute-question", (question) => {
+      console.log(question);
       setQuestionTitle(question.existingQuestion.title);
       setQuestionDescription(question.existingQuestion.body);
     });
@@ -280,77 +283,86 @@ export default function RoomPage() {
   const Question = () => {
     return (
       <Box padding={4} minWidth="300px" width="50vw">
-        <Heading as="h1" sx={{ marginBottom: 2 }} textAlign="left">
+        <Heading as="h1" sx={{ marginBottom: 2 }}>
           {questionTitle}
         </Heading>
-        {/* <Text> {formatHtml(questionDescription)} </Text> */}
-        <Text> {questionDescription} </Text>
+        <Text> {formatHtml(questionDescription)} </Text>
+        {/* <Text> {questionDescription} </Text> */}
       </Box>
     );
   };
 
   return (
-    <Flex direction={"row"} wrap="wrap" flex={1}>
-      <Flex
-        direction={"column"}
-        justifyContent="space-between"
-        minWidth="300px"
-        flex={1}
-        height="100%"
+    <Flex direction="column" alignItems="center" flex={1}>
+
+      <Button
+        onClick={requestSubmit}
+        type="submit"
+        colorScheme="blue"
+        width="10%"
+        alignSelf="flex-end"
+        m={4}
       >
-        <Box height="50%" p={6} pb={0}>
-          <Question />
-        </Box>
-        <Divider />
+        Submit
+      </Button>
 
-        <Box height="50%" p={6} pt={0}>
-          <Flex direction="column" justifyContent="flex-end" height="100%">
-            <Flex direction="column" gap="3px" my="5px" overflowY="auto">
-              <Box p={1}>
-                <Grid alignItems="center">
-                  <Grid id="chat-window">
-                    <List id="chat-window-messages">
-                      {listChatMessages}
-                      <ListItem ref={scrollBottomRef}></ListItem>
-                    </List>
+      <Box>
+        <Question />
+      </Box>
+
+      <Divider mb={8}/>
+
+      <Flex
+        direction="row"
+        justifyContent="center"
+        flex={1}
+      >
+        <Flex direction={"column"} padding={2} minWidth="78vw">
+            <div class="float-collab" id="container" ref={wrapperRef}></div>
+        </Flex>
+
+        <Box>
+          <Box height="8.5px"/>
+          <Box minwidth="25vw" border="1px" borderColor="lightGrey">
+            <Flex direction="column" minHeight={`${CHAT_HEIGHT}vh`}>
+
+              <Flex direction="column" height={`${CHAT_HEIGHT - 3.5}vh`}>
+                <Box p={1}>
+                  <Grid alignItems="center">
+                    <Grid id="chat-window">
+                      <List id="chat-window-messages">
+                        {listChatMessages}
+                        <ListItem ref={scrollBottomRef}></ListItem>
+                      </List>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Box>
-            </Flex>
-            <Grid>
-              <FormControl fullWidth>
-                <Input
-                  onChange={handleMessageChange}
-                  onKeyDown={handleEnterKey}
-                  value={message}
-                  placeholder="Type your message..."
-                  variant="outline"
-                />
-              </FormControl>
-            </Grid>
-            <Grid>
-              <IconButton onClick={sendMessage} aria-label="send" color="blue">
-                <SendIcon />
-              </IconButton>
-            </Grid>
-          </Flex>
-        </Box>
-      </Flex>
-      <Divider orientation="vertical" />
+                </Box>
+              </Flex>
 
-      <Flex direction={"column"} padding={2} minWidth="300px" width={"50vw"}>
-        <Box border={2} alignContent={"center"} alignItems="center">
-          <div class="float-collab" id="container" ref={wrapperRef}></div>
+              <Flex direction="row" height="3.5vh">
+                <Grid width="85%">
+                  <FormControl>
+                    <Input
+                      onChange={handleMessageChange}
+                      onKeyDown={handleEnterKey}
+                      value={message}
+                      placeholder="Type your message..."
+                      variant="outline"
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid width="15%">
+                  <IconButton onClick={sendMessage} aria-label="send">
+                    <SendIcon />
+                  </IconButton>
+                </Grid>
+              </Flex>
+
+            </Flex>
+          </Box>
         </Box>
-        <Button
-          onClick={requestSubmit}
-          type="submit"
-          colorScheme="blue"
-          width={"25%"}
-        >
-          Submit
-        </Button>
       </Flex>
+
       <AlertDialog isOpen={dialogueOpen} isCentered>
         <AlertDialogOverlay />
         <AlertDialogContent>

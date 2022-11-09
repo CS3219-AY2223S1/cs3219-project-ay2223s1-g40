@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "test": "mocha --exit"
+    "test": "time mocha ./tests/*.js --timeout 10000 --exit"
   },
   "keywords": [],
   "author": "",

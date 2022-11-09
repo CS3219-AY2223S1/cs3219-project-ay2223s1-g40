@@ -4,27 +4,19 @@ import React, { useContext, useEffect, useState } from "react";
 
 import {
   Button,
-  SimpleGrid,
-  Avatar,
   Text,
   Heading,
   Container,
   Box,
-  Checkbox,
-  List,
-  ListItem,
   Link,
   Icon,
-  ListIcon,
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
 
-import ListItemIcon from "@mui/material/ListItemIcon";
 import StickyNote2RoundedIcon from "@mui/icons-material/StickyNote2Rounded";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import SocketContext from "../contexts/CreateContext";
-import { GifBoxSharp } from "@mui/icons-material";
 
 function Copyright(props: any) {
   return (
@@ -40,7 +32,6 @@ function Copyright(props: any) {
 }
 
 export default function DifficultyPage() {
-  const [checked, setChecked] = useState([0]);
   const navigate = useNavigate();
   const [difficulty, setDifficulty] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -71,18 +62,6 @@ export default function DifficultyPage() {
   const handleSubmit = (event: any) => {
     event.preventDefault();
     event.stopPropagation();
-  };
-
-  // Toggle Difficulty Event
-  const handleToggle = (value: any) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [checked];
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-    setChecked(newChecked[0]);
   };
 
   // Webpage Render
@@ -138,26 +117,8 @@ export default function DifficultyPage() {
               })}
             </Stack>
           </Box>
-          {/* <DifficultyModal
-            isOpen={isOpen}
-            onClose={onClose}
-            difficulty={difficulty}
-          /> */}
         </Box>
       </Container>
     </>
   );
 }
-
-// TODO: add confirmation modal in selecting difficulty
-// const DifficultyModal = ({
-//   isOpen,
-//   onClose,
-//   difficulty,
-// }: {
-//   isOpen: boolean;
-//   difficulty: string;
-//   onClose: () => void;
-// }): JSX.Element => {
-//   return <></>;
-// };

@@ -35,7 +35,6 @@ const Router = () => {
             <Route path="/countdown" element={<CountdownPage />} />
             <Route path="/room" element={<RoomPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/landing" element={<LandingPage />} />
           </Route>
         </Route>
 

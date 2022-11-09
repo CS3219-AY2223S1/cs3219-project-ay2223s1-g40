@@ -138,7 +138,6 @@ export default function RoomPage() {
   };
   const [chatMessages, setChatMessages] = useState([welcomeMessage]);
   const [message, setMessage] = useState("");
-  const CHAT_HEIGHT = 68.7;
 
   const initialiseChat = () => {
     const chatS = io(URI_CHAT_SVC);
@@ -204,7 +203,7 @@ export default function RoomPage() {
   const [questionDescription, setQuestionDescription] = useState("");
 
   useEffect(() => {
-    if (zustandUserId === roomID) {
+    if (socket.id === roomID) {
       socket.emit("request-question", { difficulty, roomID });
     }
     socket.on("distribute-question", (question) => {

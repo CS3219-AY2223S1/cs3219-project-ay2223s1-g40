@@ -282,13 +282,13 @@ export default function RoomPage() {
 
   const Question = () => {
     return (
-      <Box padding={4} minWidth="300px" width="50vw">
+      <Flex direction="column" alignItems="center" minWidth="300px" width="50vw">
         <Heading as="h1" sx={{ marginBottom: 2 }}>
           {questionTitle}
         </Heading>
         <Text> {formatHtml(questionDescription)} </Text>
         {/* <Text> {questionDescription} </Text> */}
-      </Box>
+      </Flex>
     );
   };
 
@@ -310,36 +310,32 @@ export default function RoomPage() {
         <Question />
       </Box>
 
-      <Divider mb={8}/>
+      <Divider m={4}/>
 
       <Flex
         direction="row"
         justifyContent="center"
         flex={1}
       >
-        <Flex direction={"column"} padding={2} minWidth="78vw">
+        <Flex direction={"column"} padding={2} minWidth="75vw" mr={4}>
             <div class="float-collab" id="container" ref={wrapperRef}></div>
         </Flex>
 
         <Box>
           <Box height="8.5px"/>
-          <Box minwidth="25vw" border="1px" borderColor="lightGrey">
-            <Flex direction="column" minHeight={`${CHAT_HEIGHT}vh`}>
+          <Box minwidth="25vw" mr={2}>
+            <Flex direction="column" alignContent="center">
 
-              <Flex direction="column" height={`${CHAT_HEIGHT - 3.5}vh`}>
-                <Box p={1}>
+              <Flex direction="column" mb={1}>
                   <Grid alignItems="center">
-                    <Grid id="chat-window">
-                      <List id="chat-window-messages">
-                        {listChatMessages}
-                        <ListItem ref={scrollBottomRef}></ListItem>
-                      </List>
-                    </Grid>
+                    <List id="chat-window-messages">
+                      {listChatMessages}
+                      <ListItem ref={scrollBottomRef}></ListItem>
+                    </List>
                   </Grid>
-                </Box>
               </Flex>
 
-              <Flex direction="row" height="3.5vh">
+              <Flex direction="row">
                 <Grid width="85%">
                   <FormControl>
                     <Input

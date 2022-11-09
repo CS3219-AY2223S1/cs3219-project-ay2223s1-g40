@@ -48,14 +48,14 @@ h1 {
 }
 
 .float-collab {
-  height: 65vh;
+  height: 60vh;
 }
 
-#chat-window {
+/* #chat-window {
   height: 25rem;
-}
+} */
 
 #chat-window-messages {
-  height: 18rem;
+  height: 60vh;
   overflow: auto;
 }

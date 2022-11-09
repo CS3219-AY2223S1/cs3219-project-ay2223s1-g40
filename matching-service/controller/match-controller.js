@@ -14,8 +14,8 @@ export const respond = (io) => {
       if (!availableMatch) {
         await createMatch(userId, socket.id, difficulty);
       } else {
-        const hostPlayer = availableMatch.dataValues.hostPlayer;
-        io.emit("match-success", { hostPlayer, guestPlayer: userId });
+        const hostSocket = availableMatch.dataValues.hostSocket;
+        io.emit("match-success", { hostSocket, guestSocket: socket.id });
       }
     })
 

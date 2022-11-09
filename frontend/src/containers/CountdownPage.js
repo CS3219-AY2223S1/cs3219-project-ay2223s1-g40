@@ -52,15 +52,15 @@ export default function CountdownPage() {
     // Initialize when the page is rendered
     socket.emit("request-match", { userId: zustandUserId, difficulty});
 
-    socket.on("match-success", ({hostPlayer, guestPlayer}) => {
+    socket.on("match-success", ({hostSocket, guestSocket}) => {
       console.log("received");
-      if (zustandUserId === hostPlayer || zustandUserId === guestPlayer) {
-        socket.emit("join-room", hostPlayer);
+      if (socket.id === hostSocket || socket.id === guestSocket) {
+        socket.emit("join-room", hostSocket);
         console.log("Joining Room");
         navigate({
           pathname: "/room",
           search: createSearchParams({
-            roomID: hostPlayer,
+            roomID: hostSocket,
             difficulty: difficulty,
           }).toString(),
         });

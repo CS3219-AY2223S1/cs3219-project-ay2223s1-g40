@@ -266,11 +266,11 @@ export default function RoomPage() {
     chatSocket.on("notify-leave-room", () => {
       toast({
         title: "Your peer has submitted the session and left the room.",
-        status: 'info',
+        status: "info",
         duration: 5000,
         position: "top",
         isClosable: true,
-      })
+      });
     });
     return () => {
       chatSocket.off("notify-leave-room");
@@ -338,47 +338,32 @@ export default function RoomPage() {
       </Flex>
       <Divider orientation="vertical" />
 
-      <Flex
-        direction={"column"}
-        padding={2}
-        minWidth="300px"
-        width={"50vw"}
-        height="100vh"
-      >
-        <Box
-          border={2}
-          borderColor="black"
-          alignContent={"center"}
-          alignItems="center"
-        >
+      <Flex direction={"column"} padding={2} minWidth="300px" width={"50vw"}>
+        <Box border={2} alignContent={"center"} alignItems="center">
           <div class="float-collab" id="container" ref={wrapperRef}></div>
         </Box>
-      </Flex>
-      <Box
-        sx={{
-          height: "25%",
-          margin: 2,
-        }}
-      >
-        <Button onClick={requestSubmit} type="submit" colorScheme="blue">
+        <Button
+          onClick={requestSubmit}
+          type="submit"
+          colorScheme="blue"
+          width={"25%"}
+        >
           Submit
         </Button>
-      </Box>
+      </Flex>
       <AlertDialog isOpen={dialogueOpen} isCentered>
         <AlertDialogOverlay />
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              Do you want to submit the session?
-            </AlertDialogHeader>
-            <AlertDialogBody id="alert-dialog-description">
-              Have you and your peer agreed to submit the session? We advise you
-              to talk to your peer before submitting the session.
-            </AlertDialogBody>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            Do you want to submit the session?
+          </AlertDialogHeader>
+          <AlertDialogBody id="alert-dialog-description">
+            Have you and your peer agreed to submit the session? We advise you
+            to talk to your peer before submitting the session.
+          </AlertDialogBody>
           <AlertDialogFooter>
-            <Button onClick={handleClose}>
-              Don't submit yet
-            </Button>
-            <Button onClick={handleSubmit} colorScheme='blue' ml={2}>
+            <Button onClick={handleClose}>Don't submit yet</Button>
+            <Button onClick={handleSubmit} colorScheme="blue" ml={2}>
               Submit
             </Button>
           </AlertDialogFooter>
